@@ -8,4 +8,4 @@ mainLuiz.cpp = Atualizações do Luiz
 
 mainCarlos.cpp = Atualizações do Carlos
 
-mainIsa.cpp = Atualizações do Luiz
+mainIsa.cpp = Atualizações da isa
