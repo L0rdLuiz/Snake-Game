@@ -1,5 +1,5 @@
 # Snake-Game
-Trabalho de Algoritmo 2 Snake. Feito por: Carlos Okarenski, Luiz Antonio e Isabela Silverio
+Trabalho de Algoritmo 2 Snake. Feito por: Carlos Okarenski, Luiz Antonio e Isabela Silvério
 
 
 main.cpp Arquivo principal colocar apenas as coisas prontas e testadas
