@@ -4,7 +4,7 @@
 
 using namespace std;
 
-bool contemApenasLetras(const string& str)   // verifica se o nome contém apenas letras
+bool contemApenasLetras(const string& str)   /// verifica se o nome contém apenas letras
 {
     for (char c : str)
     {
