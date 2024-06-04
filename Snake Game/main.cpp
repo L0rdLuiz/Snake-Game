@@ -77,9 +77,6 @@ int main()
 
     //Variavel para tecla pressionada
     char tecla;
-    char maca (162);
-    int macax = 1;
-    int macay = 2;
 
     //Variavel para contagem de tempo em tela
 
@@ -168,9 +165,6 @@ int main()
                             bool CobraOn = false;
                             if(i==Cobra[0].x&&j==Cobra[0].y){
                                 cout<<char (79);
-                            }
-                            else if(i==macax&&j==macay){
-                                cout<<char(162);
                             }else{
                             for(auto const &Snake:Cobra)
                             {
@@ -184,15 +178,12 @@ int main()
                             if(!CobraOn){
                                 switch (m[i][j])
                                 {
-                                case 0:
-                                    cout << " ";
-                                    break; //caminho
-                                case 1:
-                                    cout << char(219);
-                                    break; //parede
-                                    //default: cout << "-"; //erro
-                                    }
+                                case 0: cout << " "; break; //caminho
+                                case 1: cout << char(219); break; //parede
                                 case 2: cout<<char(162); break; //maçã
+                                //default: cout << "-"; //erro
+                                }
+
                                 } //fim switch
                             }
                         }
@@ -241,8 +232,8 @@ int main()
 
                     geraMaca(m, macaNoJogo);
 
-                    if (m[x][y] == 2) {
-                        m[x][y] = 0;
+                    if (m[Cobra[0].x][Cobra[0].y] == 2) {
+                        m[Cobra[0].x][Cobra[0].y] = 0;
                         macaNoJogo = false;
                     }
 
