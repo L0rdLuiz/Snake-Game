@@ -2,8 +2,13 @@
 #include <windows.h>
 #include <conio.h>
 #include <vector>
+#include <chrono>
+#include <mmsystem.h> //musica
+
 
 using namespace std;
+using namespace std::chrono;
+
 
 struct Snake {
     int x, y;
@@ -55,13 +60,20 @@ int main()
     Cobra.push_back({5,4});
     Cobra.push_back({5,3});
 
-    //Variavel para tecla precionada
+    //Variavel para tecla pressionada
     char tecla;
     char maca (162);
     int macax = 1;
     int macay = 2;
+
+    //Variavel para contagem de tempo em tela
+
+    auto inicio = steady_clock::now();
+    auto final = steady_clock::now();
+
     do
     {
+        PlaySound(TEXT("menu.wav"), NULL, SND_ASYNC); //musica menu
         system("cls");
          cout << "                           _____             _        " << endl;
         cout << "                          /  ___|           | |       " << endl;
@@ -83,7 +95,8 @@ int main()
         cin >> menu;
         switch (menu)
         {
-        case 1: //Jogo
+        case 1:{ //Jogo
+
             cout << "digite seu nome: " << endl; //nome do jogador para o rank
             cin >> nome;
             if (!contemApenasLetras(nome))
@@ -94,9 +107,12 @@ int main()
             }
 
             system("cls");
+            auto inicio = steady_clock::now();
             do
             {
+                PlaySound(TEXT("trilha.wav"), NULL, SND_ASYNC); //musica
                 bool jogo = true;
+
 
                 int m[15][17] =
                 {
@@ -119,6 +135,7 @@ int main()
 
 
 
+
                 while (jogo == true)
                 {
                     ///Posiciona a escrita no inicio do console
@@ -136,7 +153,7 @@ int main()
                             for(auto const &Snake:Cobra)
                             {
                                 if(i==Snake.x&&j==Snake.y){
-                                cout << char(36); //personagem
+                                cout << char(79); //personagem
                                 CobraOn = true;
                                 break;
                                 }
@@ -186,12 +203,24 @@ int main()
                             MovimentoCobra(Cobra);
                             Cobra[0].y++;
                             break;
+
+
+
+
+
+
                         }
+
                     }
+                        //tempo em tela
+                        final = steady_clock::now();
+                        auto tempo = final - inicio;
+                        cout << "   TEMPO: " << duration_cast<seconds>(tempo).count();
+
                 }; //fim do laco do jogo
             }
             while (repetir == 1);
-            break;
+            break;}
         case 2: //Sobre o jogo
             system ("cls");
 
