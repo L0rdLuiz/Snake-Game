@@ -1,9 +1,23 @@
 #include <iostream>
 #include <windows.h>
 #include <conio.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
 using namespace std;
 
+void geraMaca (int m[15][17], bool& macaNoJogo) {
+    int mx = rand() % 15;
+    int my = rand() % 17;
+    if (macaNoJogo == false) {
+        if (m[mx][my] != 1) {
+
+            m[mx][my] = 2;
+            macaNoJogo = true;
+        }
+    }
+}
 
 int main()
 {
@@ -22,6 +36,9 @@ int main()
         coord.Y = CY;
         //FIM: COMANDOS PARA REPOSICIONAR O CURSOR NO INICIO DA TELA
     ///ALERTA: NAO MODIFICAR O TRECHO DE CODIGO, ACIMA.
+
+    srand (time(NULL));
+    bool macaNoJogo = false;
 
     int m[15][17]={ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
                     1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
@@ -58,6 +75,7 @@ int main()
                     switch (m[i][j]){
                         case 0: cout<<" "; break; //caminho
                         case 1: cout<<char(219); break; //parede
+                        case 2: cout<<char(162); break; //maçã
                         //default: cout<<"-"; //erro
                     } //fim switch
                 }
@@ -85,6 +103,12 @@ int main()
             }
          }
 
+         geraMaca(m, macaNoJogo);
+
+         if (m[x][y] == 2) {
+            m[x][y] = 0;
+            macaNoJogo = false;
+         }
 
     } //fim do laco do jogo
 
