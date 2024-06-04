@@ -4,6 +4,9 @@
 #include <vector>
 #include <chrono>
 #include <mmsystem.h> //musica
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
 
 using namespace std;
@@ -31,6 +34,18 @@ void MovimentoCobra(vector <Snake> &Cobra){
         Cobra[i]=Cobra[i-1];
         }
     }
+
+void geraMaca (int m[15][17], bool& macaNoJogo) {
+    int mx = rand() % 15;
+    int my = rand() % 17;
+    if (macaNoJogo == false) {
+        if (m[mx][my] != 1) {
+
+            m[mx][my] = 2;
+            macaNoJogo = true;
+        }
+    }
+}
 
 int main()
 {
@@ -70,6 +85,10 @@ int main()
 
     auto inicio = steady_clock::now();
     auto final = steady_clock::now();
+
+    //Gerador de Maçã
+    srand (time(NULL));
+    bool macaNoJogo = false;
 
     do
     {
@@ -173,7 +192,7 @@ int main()
                                     break; //parede
                                     //default: cout << "-"; //erro
                                     }
-
+                                case 2: cout<<char(162); break; //maçã
                                 } //fim switch
                             }
                         }
@@ -219,6 +238,13 @@ int main()
                         final = steady_clock::now();
                         auto tempo = final - inicio;
                         cout << "   TEMPO: " << duration_cast<seconds>(tempo).count();
+
+                    geraMaca(m, macaNoJogo);
+
+                    if (m[x][y] == 2) {
+                        m[x][y] = 0;
+                        macaNoJogo = false;
+                    }
 
                 }; //fim do laco do jogo
             }
