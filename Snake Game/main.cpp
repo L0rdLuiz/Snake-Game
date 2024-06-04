@@ -147,13 +147,16 @@ int main()
                         for (int j = 0; j < 17; j++)
                         {
                             bool CobraOn = false;
-                            if(i==macax&&j==macay){
+                            if(i==Cobra[0].x&&j==Cobra[0].y){
+                                cout<<char (79);
+                            }
+                            else if(i==macax&&j==macay){
                                 cout<<char(162);
                             }else{
                             for(auto const &Snake:Cobra)
                             {
                                 if(i==Snake.x&&j==Snake.y){
-                                cout << char(79); //personagem
+                                cout << char(111); //personagem
                                 CobraOn = true;
                                 break;
                                 }
