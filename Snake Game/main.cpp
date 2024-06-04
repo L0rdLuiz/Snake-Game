@@ -62,11 +62,14 @@ int main()
     int macay = 2;
     do
     {
-        cout << "   ____ , __     ___  |   ,   ___         ___.   ___  , _ , _     ___" << endl;
-        cout << "  (     |'  `.  /   ` |  /  .'   `      .'   `  /   ` |' `|' `. .'   `" << endl;
-        cout << "  `--.  |    | |    | |-<   |----'      |    | |    | |   |   | |----'" << endl;
-        cout << " \\___.' /    | `.__/| /  \\_ `.___,       `---| `.__/| /   '   / `.___," <<endl;
-        cout << "                                         \\___/" << endl << endl << endl << endl<< endl;
+        system("cls");
+         cout << "                           _____             _        " << endl;
+        cout << "                          /  ___|           | |       " << endl;
+        cout << "                          \\ `--. _ __   __ _| | _____ " << endl;
+        cout << "                           `--. \\ '_ \\ / _` | |/ / _ \\" << endl;
+        cout << "                          /\\__/ / | | | (_| |   <  __/" << endl;
+        cout << "                          \\____/|_| |_|\\__,_|_|\\_\\___|" << endl;
+        cout << "                                                      " << endl<<endl;
 
         cout <<"                          ______________________________ " << endl;
         cout << "                         |                              |" << endl;
@@ -216,7 +219,8 @@ int main()
 
             break;
         default:
-            cout << "Esta opcao nao e aceita digite outro numero";
+            cout << "Esta opcao nao e aceita digite outro numero"<<endl;
+            system("pause");
             break;
         }
     }
