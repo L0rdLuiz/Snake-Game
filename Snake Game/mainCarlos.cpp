@@ -21,9 +21,9 @@ bool contemApenasLetras(const string& str)   /// verifica se o nome contém apen
     return true;
 }
 
-void MovimentoCobra(vector <Snake> &Cobra){
-    for(int i = Cobra.size();i>0;i--){
-        Cobra[i]=Cobra[i-1];
+void MovimentoCobra(vector <Snake> &Cobra){ ///MOVIMENTO DO CORPO DA COBRA
+    for(int i = Cobra.size();i>0;i--){ ///COBRA SIZE PEGA A ULTIMA POSSIÇÃO 
+        Cobra[i]=Cobra[i-1]; ///POSIÇAO DA COBRA ATUAL RECEBE A ANTECESORA 
         }
     }
 
@@ -51,7 +51,7 @@ int main()
     int TamanhoCobra = 3;
     vector <Snake> Cobra;
     //Posicao inicial do personagem no console
-    Cobra.push_back({5,5});
+    Cobra.push_back({5,5}); ///COMANDO PUSH BACK CRIA ALGO EM UMA POSIÇÃO VAZIA
     Cobra.push_back({5,4});
     Cobra.push_back({5,3});
 
@@ -126,23 +126,23 @@ int main()
                     {
                         for (int j = 0; j < 17; j++)
                         {
-                            bool CobraOn = false;
+                            bool CobraOn = false; ///VERIFICAÇÃO PARA GARANTIR QUE O LOOP DO CORPO DA COBRA OCORRA
                             if(i==Cobra[0].x&&j==Cobra[0].y){
                                 cout<< char (176);
                             }
                             else if(i==macax&&j==macay){
                                 cout<<char(162);
                             }else{
-                            for(auto const &Snake:Cobra)
+                            for(auto const &Snake:Cobra) ///FOR QUE VAI FAZER O STRUCT ATE O VECTOR 
                             {
                                 if(i==Snake.x&&j==Snake.y){
-                                cout << char(36); //personagem
-                                CobraOn = true;
+                                cout << char(36); ///CORPO DA COBRA 
+                                CobraOn = true; ///CADA VERIFICAÇÃO FAZ VIRA TRUE E QUEBRA O LOOP, GERA O MAPA E SEGUE NOVAMENTE PARA A PROX PARTE DA COBRA
                                 break;
                                 }
                             }
 
-                            if(!CobraOn){
+                            if(!CobraOn){ ///EXECUTA QUANDO FOR DIFERENTE DA CONDIÇÃO 
                                 switch (m[i][j])
                                 {
                                 case 0:
@@ -168,8 +168,8 @@ int main()
                         {
                         case 72:
                         case 'w': ///cima
-                            MovimentoCobra(Cobra);
-                            Cobra[0].x--;
+                            MovimentoCobra(Cobra); ///CHAMA A FUNÇÃO DE MOVIMENTO DA COBRA
+                            Cobra[0].x--; ///COBRA SE MEXER A PARTIR DO VECTOR
                             break;
                         case 80:
                         case 's': ///baixo
