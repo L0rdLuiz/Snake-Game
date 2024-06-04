@@ -1,8 +1,13 @@
 #include <iostream>
 #include <windows.h>
 #include <conio.h>
+#include <vector>
 
 using namespace std;
+
+struct Snake {
+    int x, y;
+};
 
 bool contemApenasLetras(const string& str)   /// verifica se o nome contém apenas letras
 {
@@ -15,6 +20,12 @@ bool contemApenasLetras(const string& str)   /// verifica se o nome contém apen
     }
     return true;
 }
+
+void MovimentoCobra(vector <Snake> &Cobra){
+    for(int i = Cobra.size();i>0;i--){
+        Cobra[i]=Cobra[i-1];
+        }
+    }
 
 int main()
 {
@@ -37,7 +48,18 @@ int main()
     int menu;
     string nome;
     int repetir = 0;
+    int TamanhoCobra = 3;
+    vector <Snake> Cobra;
+    //Posicao inicial do personagem no console
+    Cobra.push_back({5,5});
+    Cobra.push_back({5,4});
+    Cobra.push_back({5,3});
 
+    //Variavel para tecla precionada
+    char tecla;
+    char maca (162);
+    int macax = 1;
+    int macay = 2;
     do
     {
         cout << "   ____ , __     ___  |   ,   ___         ___.   ___  , _ , _     ___" << endl;
@@ -92,10 +114,7 @@ int main()
                     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
                 };
 
-                //Posicao inicial do personagem no console
-                int x = 5, y = 5;
-                //Variavel para tecla precionada
-                char tecla;
+
 
                 while (jogo == true)
                 {
@@ -107,12 +126,20 @@ int main()
                     {
                         for (int j = 0; j < 17; j++)
                         {
-                            if (i == x && j == y)
+                            bool CobraOn = false;
+                            if(i==macax&&j==macay){
+                                cout<<char(162);
+                            }else{
+                            for(auto const &Snake:Cobra)
                             {
+                                if(i==Snake.x&&j==Snake.y){
                                 cout << char(36); //personagem
+                                CobraOn = true;
+                                break;
+                                }
                             }
-                            else
-                            {
+
+                            if(!CobraOn){
                                 switch (m[i][j])
                                 {
                                 case 0:
@@ -122,6 +149,8 @@ int main()
                                     cout << char(219);
                                     break; //parede
                                     //default: cout << "-"; //erro
+                                    }
+
                                 } //fim switch
                             }
                         }
@@ -136,19 +165,23 @@ int main()
                         {
                         case 72:
                         case 'w': ///cima
-                            x--;
+                            MovimentoCobra(Cobra);
+                            Cobra[0].x--;
                             break;
                         case 80:
                         case 's': ///baixo
-                            x++;
+                            MovimentoCobra(Cobra);
+                            Cobra[0].x++;
                             break;
                         case 75:
                         case 'a': ///esquerda
-                            y--;
+                            MovimentoCobra(Cobra);
+                            Cobra[0].y--;
                             break;
                         case 77:
                         case 'd': ///direita
-                            y++;
+                            MovimentoCobra(Cobra);
+                            Cobra[0].y++;
                             break;
                         }
                     }
