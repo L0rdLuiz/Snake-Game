@@ -1,8 +1,18 @@
 #include <iostream>
 #include <windows.h>
 #include <conio.h>
+#include <vector>
+#include <chrono>
+#include <mmsystem.h> //musica
+
 
 using namespace std;
+using namespace std::chrono;
+
+
+struct Snake {
+    int x, y;
+};
 
 bool contemApenasLetras(const string& str)   /// verifica se o nome contém apenas letras
 {
@@ -15,6 +25,12 @@ bool contemApenasLetras(const string& str)   /// verifica se o nome contém apen
     }
     return true;
 }
+
+void MovimentoCobra(vector <Snake> &Cobra){
+    for(int i = Cobra.size();i>0;i--){
+        Cobra[i]=Cobra[i-1];
+        }
+    }
 
 int main()
 {
@@ -37,14 +53,35 @@ int main()
     int menu;
     string nome;
     int repetir = 0;
+    int TamanhoCobra = 3;
+    vector <Snake> Cobra;
+    //Posicao inicial do personagem no console
+    Cobra.push_back({5,5});
+    Cobra.push_back({5,4});
+    Cobra.push_back({5,3});
+
+    //Variavel para tecla pressionada
+    char tecla;
+    char maca (162);
+    int macax = 1;
+    int macay = 2;
+
+    //Variavel para contagem de tempo em tela
+
+    auto inicio = steady_clock::now();
+    auto final = steady_clock::now();
 
     do
     {
-        cout << "   ____ , __     ___  |   ,   ___         ___.   ___  , _ , _     ___" << endl;
-        cout << "  (     |'  `.  /   ` |  /  .'   `      .'   `  /   ` |' `|' `. .'   `" << endl;
-        cout << "  `--.  |    | |    | |-<   |----'      |    | |    | |   |   | |----'" << endl;
-        cout << " \\___.' /    | `.__/| /  \\_ `.___,       `---| `.__/| /   '   / `.___," <<endl;
-        cout << "                                         \\___/" << endl << endl << endl << endl<< endl;
+        PlaySound(TEXT("menu.wav"), NULL, SND_ASYNC); //musica menu
+        system("cls");
+         cout << "                           _____             _        " << endl;
+        cout << "                          /  ___|           | |       " << endl;
+        cout << "                          \\ `--. _ __   __ _| | _____ " << endl;
+        cout << "                           `--. \\ '_ \\ / _` | |/ / _ \\" << endl;
+        cout << "                          /\\__/ / | | | (_| |   <  __/" << endl;
+        cout << "                          \\____/|_| |_|\\__,_|_|\\_\\___|" << endl;
+        cout << "                                                      " << endl<<endl;
 
         cout <<"                          ______________________________ " << endl;
         cout << "                         |                              |" << endl;
@@ -58,7 +95,8 @@ int main()
         cin >> menu;
         switch (menu)
         {
-        case 1: //Jogo
+        case 1:{ //Jogo
+
             cout << "digite seu nome: " << endl; //nome do jogador para o rank
             cin >> nome;
             if (!contemApenasLetras(nome))
@@ -69,9 +107,12 @@ int main()
             }
 
             system("cls");
+            auto inicio = steady_clock::now();
             do
             {
+                PlaySound(TEXT("trilha.wav"), NULL, SND_ASYNC); //musica
                 bool jogo = true;
+
 
                 int m[15][17] =
                 {
@@ -92,10 +133,8 @@ int main()
                     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
                 };
 
-                //Posicao inicial do personagem no console
-                int x = 5, y = 5;
-                //Variavel para tecla precionada
-                char tecla;
+
+
 
                 while (jogo == true)
                 {
@@ -107,12 +146,20 @@ int main()
                     {
                         for (int j = 0; j < 17; j++)
                         {
-                            if (i == x && j == y)
+                            bool CobraOn = false;
+                            if(i==macax&&j==macay){
+                                cout<<char(162);
+                            }else{
+                            for(auto const &Snake:Cobra)
                             {
-                                cout << char(36); //personagem
+                                if(i==Snake.x&&j==Snake.y){
+                                cout << char(79); //personagem
+                                CobraOn = true;
+                                break;
+                                }
                             }
-                            else
-                            {
+
+                            if(!CobraOn){
                                 switch (m[i][j])
                                 {
                                 case 0:
@@ -122,6 +169,8 @@ int main()
                                     cout << char(219);
                                     break; //parede
                                     //default: cout << "-"; //erro
+                                    }
+
                                 } //fim switch
                             }
                         }
@@ -136,26 +185,42 @@ int main()
                         {
                         case 72:
                         case 'w': ///cima
-                            x--;
+                            MovimentoCobra(Cobra);
+                            Cobra[0].x--;
                             break;
                         case 80:
                         case 's': ///baixo
-                            x++;
+                            MovimentoCobra(Cobra);
+                            Cobra[0].x++;
                             break;
                         case 75:
                         case 'a': ///esquerda
-                            y--;
+                            MovimentoCobra(Cobra);
+                            Cobra[0].y--;
                             break;
                         case 77:
                         case 'd': ///direita
-                            y++;
+                            MovimentoCobra(Cobra);
+                            Cobra[0].y++;
                             break;
+
+
+
+
+
+
                         }
+
                     }
+                        //tempo em tela
+                        final = steady_clock::now();
+                        auto tempo = final - inicio;
+                        cout << "   TEMPO: " << duration_cast<seconds>(tempo).count();
+
                 }; //fim do laco do jogo
             }
             while (repetir == 1);
-            break;
+            break;}
         case 2: //Sobre o jogo
             system ("cls");
 
@@ -183,7 +248,8 @@ int main()
 
             break;
         default:
-            cout << "Esta opcao nao e aceita digite outro numero";
+            cout << "Esta opcao nao e aceita digite outro numero"<<endl;
+            system("pause");
             break;
         }
     }
