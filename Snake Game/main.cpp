@@ -144,7 +144,9 @@ int main()
                 CobraViva.vivo = true;
                 bool macaNoJogo = false;
                 auto inicio = steady_clock::now();
-
+                milliseconds velocidade(750);
+                auto inicioCobra = high_resolution_clock::now();
+                CobraHorizontal = true;
 
                 int m[15][17] =
                 {
@@ -273,6 +275,13 @@ int main()
                         Cobra.push_back({5,4});
                         Cobra.push_back({5,3});
                         jogo = false;
+                    }
+
+                    auto agoraCobra = high_resolution_clock::now();
+                    auto passouCobra = duration_cast<milliseconds>(agoraCobra - inicioCobra);
+
+                    if (passouCobra >= velocidade) {
+                        
                     }
 
                 }; //fim do laco do jogo
