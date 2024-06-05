@@ -2,8 +2,16 @@
 #include <windows.h>
 #include <conio.h>
 #include <vector>
+#include <chrono>
+#include <mmsystem.h> //musica
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
 
 using namespace std;
+using namespace std::chrono;
+
 
 struct Snake {
     int x, y;
@@ -21,11 +29,30 @@ bool contemApenasLetras(const string& str)   /// verifica se o nome contém apen
     return true;
 }
 
-void MovimentoCobra(vector <Snake> &Cobra){ ///MOVIMENTO DO CORPO DA COBRA
-    for(int i = Cobra.size();i>0;i--){ ///COBRA SIZE PEGA A ULTIMA POSSIÇÃO 
-        Cobra[i]=Cobra[i-1]; ///POSIÇAO DA COBRA ATUAL RECEBE A ANTECESORA 
+void MovimentoCobra(vector <Snake> &Cobra){
+    for(int i = Cobra.size();i>0;i--){
+        Cobra[i]=Cobra[i-1];
         }
     }
+
+void geraMaca (int m[15][17], bool& macaNoJogo) {
+    int mx = rand() % 15;
+    int my = rand() % 17;
+    if (macaNoJogo == false) {
+        if (m[mx][my] != 1) {
+
+            m[mx][my] = 2;
+            macaNoJogo = true;
+        }
+    }
+}
+
+//void IncrementoDaCobra (vector <Snake>&Cobra){
+//    for(int i = 0;i<Cobra.size();;i--){
+//        Cobra[i]
+//    }
+//
+//}
 
 int main()
 {
@@ -51,22 +78,34 @@ int main()
     int TamanhoCobra = 3;
     vector <Snake> Cobra;
     //Posicao inicial do personagem no console
-    Cobra.push_back({5,5}); ///COMANDO PUSH BACK CRIA ALGO EM UMA POSIÇÃO VAZIA
+    Cobra.push_back({5,5});
     Cobra.push_back({5,4});
     Cobra.push_back({5,3});
-
-    //Variavel para tecla precionada
+    bool CobraHorizontal = false;
+    bool CobraVertical   = false;
+    //Variavel para tecla pressionada
     char tecla;
-    char maca (162);
-    int macax = 1;
-    int macay = 2;
+
+    //Variavel para contagem de tempo em tela
+
+    auto inicio = steady_clock::now();
+    auto final = steady_clock::now();
+
+    //Gerador de Maçã
+    srand (time(NULL));
+    bool macaNoJogo = false;
+
     do
     {
-        cout << "   ____ , __     ___  |   ,   ___         ___.   ___  , _ , _     ___" << endl;
-        cout << "  (     |'  `.  /   ` |  /  .'   `      .'   `  /   ` |' `|' `. .'   `" << endl;
-        cout << "  `--.  |    | |    | |-<   |----'      |    | |    | |   |   | |----'" << endl;
-        cout << " \\___.' /    | `.__/| /  \\_ `.___,       `---| `.__/| /   '   / `.___," <<endl;
-        cout << "                                         \\___/" << endl << endl << endl << endl<< endl;
+        PlaySound(TEXT("menu.wav"), NULL, SND_ASYNC); //musica menu
+        system("cls");
+         cout << "                           _____             _        " << endl;
+        cout << "                          /  ___|           | |       " << endl;
+        cout << "                          \\ `--. _ __   __ _| | _____ " << endl;
+        cout << "                           `--. \\ '_ \\ / _` | |/ / _ \\" << endl;
+        cout << "                          /\\__/ / | | | (_| |   <  __/" << endl;
+        cout << "                          \\____/|_| |_|\\__,_|_|\\_\\___|" << endl;
+        cout << "                                                      " << endl<<endl;
 
         cout <<"                          ______________________________ " << endl;
         cout << "                         |                              |" << endl;
@@ -80,7 +119,8 @@ int main()
         cin >> menu;
         switch (menu)
         {
-        case 1: //Jogo
+        case 1:{ //Jogo
+
             cout << "digite seu nome: " << endl; //nome do jogador para o rank
             cin >> nome;
             if (!contemApenasLetras(nome))
@@ -91,9 +131,12 @@ int main()
             }
 
             system("cls");
+            auto inicio = steady_clock::now();
             do
             {
+                PlaySound(TEXT("trilha.wav"), NULL, SND_ASYNC); //musica
                 bool jogo = true;
+
 
                 int m[15][17] =
                 {
@@ -116,6 +159,7 @@ int main()
 
 
 
+
                 while (jogo == true)
                 {
                     ///Posiciona a escrita no inicio do console
@@ -126,33 +170,27 @@ int main()
                     {
                         for (int j = 0; j < 17; j++)
                         {
-                            bool CobraOn = false; ///VERIFICAÇÃO PARA GARANTIR QUE O LOOP DO CORPO DA COBRA OCORRA
+                            bool CobraOn = false;
                             if(i==Cobra[0].x&&j==Cobra[0].y){
-                                cout<< char (176);
-                            }
-                            else if(i==macax&&j==macay){
-                                cout<<char(162);
+                                cout<<char (79);
                             }else{
-                            for(auto const &Snake:Cobra) ///FOR QUE VAI FAZER O STRUCT ATE O VECTOR 
+                            for(auto const &Snake:Cobra)
                             {
                                 if(i==Snake.x&&j==Snake.y){
-                                cout << char(36); ///CORPO DA COBRA 
-                                CobraOn = true; ///CADA VERIFICAÇÃO FAZ VIRA TRUE E QUEBRA O LOOP, GERA O MAPA E SEGUE NOVAMENTE PARA A PROX PARTE DA COBRA
+                                cout << char(111); //personagem
+                                CobraOn = true;
                                 break;
                                 }
                             }
 
-                            if(!CobraOn){ ///EXECUTA QUANDO FOR DIFERENTE DA CONDIÇÃO 
+                            if(!CobraOn){
                                 switch (m[i][j])
                                 {
-                                case 0:
-                                    cout << " ";
-                                    break; //caminho
-                                case 1:
-                                    cout << char(219);
-                                    break; //parede
-                                    //default: cout << "-"; //erro
-                                    }
+                                case 0: cout << " "; break; //caminho
+                                case 1: cout << char(219); break; //parede
+                                case 2: cout<<char(162); break; //maçã
+                                //default: cout << "-"; //erro
+                                }
 
                                 } //fim switch
                             }
@@ -168,30 +206,68 @@ int main()
                         {
                         case 72:
                         case 'w': ///cima
-                            MovimentoCobra(Cobra); ///CHAMA A FUNÇÃO DE MOVIMENTO DA COBRA
-                            Cobra[0].x--; ///COBRA SE MEXER A PARTIR DO VECTOR
+                            if(CobraHorizontal==true){
+                            MovimentoCobra(Cobra);
+                            Cobra[0].x--;
+                            CobraVertical=true;
+                            CobraHorizontal=false;
+                            }
                             break;
                         case 80:
                         case 's': ///baixo
+                            if(CobraHorizontal==true){
                             MovimentoCobra(Cobra);
                             Cobra[0].x++;
+                            CobraVertical=true;
+                            CobraHorizontal=false;
+                            }
                             break;
                         case 75:
                         case 'a': ///esquerda
+                            if(CobraVertical==true){
                             MovimentoCobra(Cobra);
                             Cobra[0].y--;
+                            CobraVertical=false;
+                            CobraHorizontal=true;
+                            }
                             break;
                         case 77:
                         case 'd': ///direita
+                            if(CobraVertical==true){
                             MovimentoCobra(Cobra);
                             Cobra[0].y++;
+                            CobraVertical=false;
+                            CobraHorizontal=true;
+                            }
                             break;
+                        case 'o': ///TECLA PARA TESTAR O VERIFCADOR DE MOVIMENTO/ POR QUE NAO TEM AINDA O CHRONO. DEPOIS DO CHRONO TIRAR ISSO
+                            CobraVertical=true;
+                            break;
+
+
+
+
+
+
                         }
+
                     }
+                        //tempo em tela
+                        final = steady_clock::now();
+                        auto tempo = final - inicio;
+                        cout << "   TEMPO: " << duration_cast<seconds>(tempo).count();
+
+                    geraMaca(m, macaNoJogo);
+
+                    if (m[Cobra[0].x][Cobra[0].y] == 2) {
+                        m[Cobra[0].x][Cobra[0].y] = 0;
+                        macaNoJogo = false;
+                    }
+
                 }; //fim do laco do jogo
             }
             while (repetir == 1);
-            break;
+            break;}
         case 2: //Sobre o jogo
             system ("cls");
 
@@ -219,7 +295,8 @@ int main()
 
             break;
         default:
-            cout << "Esta opcao nao e aceita digite outro numero";
+            cout << "Esta opcao nao e aceita digite outro numero"<<endl;
+            system("pause");
             break;
         }
     }
