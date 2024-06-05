@@ -82,8 +82,14 @@ int main()
     Cobra.push_back({5,5});
     Cobra.push_back({5,4});
     Cobra.push_back({5,3});
+    ///VERIFICAÇÃO COBRA NA HORIZONTAL OU VERTICAL
     bool CobraHorizontal = false;
     bool CobraVertical   = false;
+    ///ONDE A COBRA ESTA OLHANDO
+    bool CabecaCima = false;
+    bool CabecaBaixo = false;
+    bool CabecaDireita = false;
+    bool CabecaEsquerda = false;
     //Variavel para tecla pressionada
     char tecla;
 
@@ -147,6 +153,7 @@ int main()
                 milliseconds velocidade(750);
                 auto inicioCobra = high_resolution_clock::now();
                 CobraHorizontal = true;
+                CabecaDireita= true;
 
                 int m[15][17] =
                 {
@@ -221,6 +228,10 @@ int main()
                             Cobra[0].x--;
                             CobraVertical=true;
                             CobraHorizontal=false;
+                            CabecaCima = true;
+                            CabecaBaixo = false;
+                            CabecaDireita = false;
+                            CabecaEsquerda = false;
                             }
                             break;
                         case 80:
@@ -230,6 +241,10 @@ int main()
                             Cobra[0].x++;
                             CobraVertical=true;
                             CobraHorizontal=false;
+                            CabecaCima = false;
+                            CabecaBaixo = true;
+                            CabecaDireita = false;
+                            CabecaEsquerda = false;
                             }
                             break;
                         case 75:
@@ -239,6 +254,10 @@ int main()
                             Cobra[0].y--;
                             CobraVertical=false;
                             CobraHorizontal=true;
+                            CabecaCima = false;
+                            CabecaBaixo = false;
+                            CabecaDireita = false;
+                            CabecaEsquerda = true;
                             }
                             break;
                         case 77:
@@ -248,10 +267,15 @@ int main()
                             Cobra[0].y++;
                             CobraVertical=false;
                             CobraHorizontal=true;
+                            CabecaCima = false;
+                            CabecaCima = false;
+                            CabecaDireita = true;
+                            CabecaEsquerda = false;
                             }
                             break;
                         case 'o': ///TECLA PARA TESTAR O VERIFCADOR DE MOVIMENTO/ POR QUE NAO TEM AINDA O CHRONO. DEPOIS DO CHRONO TIRAR ISSO
                             CobraVertical=true;
+                            CabecaDireita = true;
                             break;
                         }
 
@@ -281,7 +305,7 @@ int main()
                     auto passouCobra = duration_cast<milliseconds>(agoraCobra - inicioCobra);
 
                     if (passouCobra >= velocidade) {
-                        
+
                     }
 
                 }; //fim do laco do jogo
