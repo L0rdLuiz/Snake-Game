@@ -15,6 +15,7 @@ using namespace std::chrono;
 
 struct Snake {
     int x, y;
+    bool vivo;
 };
 
 bool contemApenasLetras(const string& str)   /// verifica se o nome contém apenas letras
@@ -81,8 +82,14 @@ int main()
     Cobra.push_back({5,5});
     Cobra.push_back({5,4});
     Cobra.push_back({5,3});
+    ///VERIFICAÇÃO COBRA NA HORIZONTAL OU VERTICAL
     bool CobraHorizontal = false;
     bool CobraVertical   = false;
+    ///ONDE A COBRA ESTA OLHANDO
+    bool CabecaCima = false;
+    bool CabecaBaixo = false;
+    bool CabecaDireita = false;
+    bool CabecaEsquerda = false;
     //Variavel para tecla pressionada
     char tecla;
 
@@ -94,6 +101,9 @@ int main()
     //Gerador de Maçã
     srand (time(NULL));
     bool macaNoJogo = false;
+
+    //Cobra viva
+    Snake CobraViva;
 
     do
     {
@@ -134,9 +144,16 @@ int main()
             auto inicio = steady_clock::now();
             do
             {
+                //Botar coisas para repetir aqui
                 PlaySound(TEXT("trilha.wav"), NULL, SND_ASYNC); //musica
                 bool jogo = true;
-
+                CobraViva.vivo = true;
+                bool macaNoJogo = false;
+                auto inicio = steady_clock::now();
+                milliseconds velocidade(750);
+                auto inicioCobra = high_resolution_clock::now();
+                CobraHorizontal = true;
+                CabecaDireita= true;
 
                 int m[15][17] =
                 {
@@ -211,6 +228,10 @@ int main()
                             Cobra[0].x--;
                             CobraVertical=true;
                             CobraHorizontal=false;
+                            CabecaCima = true;
+                            CabecaBaixo = false;
+                            CabecaDireita = false;
+                            CabecaEsquerda = false;
                             }
                             break;
                         case 80:
@@ -220,6 +241,10 @@ int main()
                             Cobra[0].x++;
                             CobraVertical=true;
                             CobraHorizontal=false;
+                            CabecaCima = false;
+                            CabecaBaixo = true;
+                            CabecaDireita = false;
+                            CabecaEsquerda = false;
                             }
                             break;
                         case 75:
@@ -229,6 +254,10 @@ int main()
                             Cobra[0].y--;
                             CobraVertical=false;
                             CobraHorizontal=true;
+                            CabecaCima = false;
+                            CabecaBaixo = false;
+                            CabecaDireita = false;
+                            CabecaEsquerda = true;
                             }
                             break;
                         case 77:
@@ -238,24 +267,23 @@ int main()
                             Cobra[0].y++;
                             CobraVertical=false;
                             CobraHorizontal=true;
+                            CabecaCima = false;
+                            CabecaCima = false;
+                            CabecaDireita = true;
+                            CabecaEsquerda = false;
                             }
                             break;
                         case 'o': ///TECLA PARA TESTAR O VERIFCADOR DE MOVIMENTO/ POR QUE NAO TEM AINDA O CHRONO. DEPOIS DO CHRONO TIRAR ISSO
                             CobraVertical=true;
+                            CabecaDireita = true;
                             break;
-
-
-
-
-
-
                         }
 
                     }
-                        //tempo em tela
-                        final = steady_clock::now();
-                        auto tempo = final - inicio;
-                        cout << "   TEMPO: " << duration_cast<seconds>(tempo).count();
+                    //tempo em tela
+                    final = steady_clock::now();
+                    auto tempo = final - inicio;
+                    cout << "   TEMPO: " << duration_cast<seconds>(tempo).count();
 
                     geraMaca(m, macaNoJogo);
 
@@ -264,7 +292,33 @@ int main()
                         macaNoJogo = false;
                     }
 
+                    if (CobraViva.vivo == true && m[Cobra[0].x][Cobra[0].y] == 1) {
+                        CobraViva.vivo = false;
+                        Cobra.clear();
+                        Cobra.push_back({5,5});
+                        Cobra.push_back({5,4});
+                        Cobra.push_back({5,3});
+                        jogo = false;
+                    }
+
+                    auto agoraCobra = high_resolution_clock::now();
+                    auto passouCobra = duration_cast<milliseconds>(agoraCobra - inicioCobra);
+
+                    if (passouCobra >= velocidade) {
+
+                    }
+
                 }; //fim do laco do jogo
+                if (CobraViva.vivo == false) {
+                    system ("cls");
+                    cout<<"Voce perdeu o jogo"<<endl;
+                    cout<<"Jogo feito por:"<<endl<<"Luiz Antonio Haenisch"<<endl<<"Carlos Henrique Okarenski Ramos Depieri"<<endl<<"Isabela Silverio Cardoso Pereira"<<endl;
+                    cout<<"Professor: Alex Luciano"<<endl;
+                    cout<<"Quer jogar novamente?"<<endl;
+                    cout<<"Digite 1 para jogar de novo ou 0 para sair"<<endl;
+                    cin>>repetir;
+                    system ("cls");
+                }
             }
             while (repetir == 1);
             break;}
