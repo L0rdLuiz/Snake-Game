@@ -7,6 +7,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <fstream>
+#include <string>
 
 
 using namespace std;
@@ -68,6 +70,80 @@ void IncrementoDaCobra (vector <Snake>&Cobra, bool CobraHorizontal, bool CobraVe
     }
 }
 
+void salvarRanking(const string& nome, int &pontuacao)        //salva a pontuacao no arquivo
+{
+    ofstream arquivoS;
+    arquivoS.open("ranking.txt", std::ios_base::app);
+    if (arquivoS.is_open())
+
+    {arquivoS << "Nome: " << nome <<  endl;
+        arquivoS << "Pontuacao: " << pontuacao <<  endl << endl;
+        arquivoS.close();}
+
+
+        }
+
+        ///recursividade (ordenando rank)
+
+void exibirRankingRecursivo(vector<pair<int, string>>& ranking, int esquerda, int direita)
+{
+    if (esquerda < direita)
+    {
+        int pivo = ranking[direita].first;
+        int i = esquerda - 1;
+        for (int j = esquerda; j <= direita - 1; j++)
+        {
+            if (ranking[j].first > pivo)
+            {
+                i++;
+                swap(ranking[i], ranking[j]);
+            }
+        }
+        swap(ranking[i + 1], ranking[direita]);
+        int indice = i + 1;
+        exibirRankingRecursivo(ranking, esquerda, indice - 1);
+        exibirRankingRecursivo(ranking, indice + 1, direita);
+    }
+}
+
+void exibirRanking() ///exibi rank ordenado em tela
+{
+    ifstream arquivoS;
+    string linha;
+    vector<pair<int, string>> ranking;
+    arquivoS.open("ranking.txt");
+    if (arquivoS.is_open())
+    {
+        int pontos;
+        string nome;
+        while (arquivoS >> linha)
+        {
+            if (linha == "Pontuacao:")
+            {
+                arquivoS >> pontos;
+                ranking.push_back(make_pair(pontos, nome));
+            }
+            else if (linha == "Nome:")
+            {
+                arquivoS >> nome;
+            }
+        }
+        arquivoS.close();
+
+        exibirRankingRecursivo(ranking, 0, ranking.size() - 1);
+
+        cout << "Ranking:" << endl;
+        for (const auto& pair : ranking)
+        {
+            cout << pair.second << " - " << pair.first << endl;
+        }
+    }
+    else
+    {
+        cout << "Erro ao abrir o arquivo de ranking." << endl;
+    }
+}
+
 int main()
 {
     ///ALERTA: NAO MODIFICAR O TRECHO DE CODIGO, A SEGUIR.
@@ -88,6 +164,8 @@ int main()
 
     int menu;
     string nome;
+    int pontuacao = 0;
+    exibirRanking();
     int repetir = 0;
     int TamanhoCobra = 3;
     vector <Snake> Cobra;
@@ -311,7 +389,8 @@ int main()
                     //tempo em tela
                     final = steady_clock::now();
                     auto tempo = final - inicio;
-                    cout << "   TEMPO: " << duration_cast<seconds>(tempo).count();
+                    cout << "   TEMPO: " << duration_cast<seconds>(tempo).count() << endl;
+                    cout << " PONTUACAO: " << pontuacao; //pontuacao em tela
 
                     geraMaca(m, macaNoJogo);
 
@@ -319,6 +398,7 @@ int main()
                         IncrementoDaCobra(Cobra,CobraHorizontal, CobraVertical, CabecaCima, CabecaBaixo, CabecaDireita, CabecaEsquerda, m);
                         m[Cobra[0].x][Cobra[0].y] = 0;
                         macaNoJogo = false;
+                        pontuacao+=10; //somando 10 à pontuacao
                     }
 
                     if (CobraViva.vivo == true && m[Cobra[0].x][Cobra[0].y] == 1) {
@@ -337,14 +417,20 @@ int main()
 
 
                 }; //fim do laco do jogo
+                if(CobraViva.vivo == false){
+                   PlaySound(TEXT("morreu.wav"), NULL, SND_ASYNC); //som morte cobra
+                }
                 if (CobraViva.vivo == false) {
                     system ("cls");
-                    cout<<"Voce perdeu o jogo"<<endl;
+                    salvarRanking(nome,pontuacao);
+                    exibirRanking();
+                    cout<< endl << "Voce perdeu o jogo"<<endl;
                     cout<<"Jogo feito por:"<<endl<<"Luiz Antonio Haenisch"<<endl<<"Carlos Henrique Okarenski Ramos Depieri"<<endl<<"Isabela Silverio Cardoso Pereira"<<endl;
                     cout<<"Professor: Alex Luciano"<<endl;
                     cout<<"Quer jogar novamente?"<<endl;
-                    cout<<"Digite 1 para jogar de novo ou 0 para sair"<<endl;
+                    cout<<"Digite 1 para jogar de novo ou 0 retornar ao menu"<<endl;
                     cin>>repetir;
+
                     system ("cls");
                 }
             }
@@ -368,10 +454,10 @@ int main()
             system ("cls");
             break;
         case 3: //Rank
-            system ("cls");
 
+            system("cls");
+            exibirRanking();
             system("pause");
-            system ("cls");
             break;
         case 4: // Obrigado por jogar
 
