@@ -252,9 +252,7 @@ int main()
                             CobraVertical=true;
                             CobraHorizontal=false;
                             CabecaCima = true;
-                            CabecaBaixo = false;
-                            CabecaDireita = false;
-                            CabecaEsquerda = false;
+                            CabecaBaixo = CabecaDireita = CabecaEsquerda = false;
                             }
                             break;
                         case 80:
@@ -264,10 +262,8 @@ int main()
                             Cobra[0].x++;
                             CobraVertical=true;
                             CobraHorizontal=false;
-                            CabecaCima = false;
                             CabecaBaixo = true;
-                            CabecaDireita = false;
-                            CabecaEsquerda = false;
+                            CabecaCima = CabecaDireita = CabecaEsquerda = false;
                             }
                             break;
                         case 75:
@@ -277,10 +273,8 @@ int main()
                             Cobra[0].y--;
                             CobraVertical=false;
                             CobraHorizontal=true;
-                            CabecaCima = false;
-                            CabecaBaixo = false;
-                            CabecaDireita = false;
                             CabecaEsquerda = true;
+                            CabecaCima = CabecaBaixo = CabecaDireita = false;
                             }
                             break;
                         case 77:
@@ -290,10 +284,8 @@ int main()
                             Cobra[0].y++;
                             CobraVertical=false;
                             CobraHorizontal=true;
-                            CabecaCima = false;
-                            CabecaCima = false;
                             CabecaDireita = true;
-                            CabecaEsquerda = false;
+                            CabecaCima = CabecaBaixo = CabecaEsquerda = false;
                             }
                             break;
                         case 'o': ///TECLA PARA TESTAR O VERIFCADOR DE MOVIMENTO/ POR QUE NAO TEM AINDA O CHRONO. DEPOIS DO CHRONO TIRAR ISSO
