@@ -7,6 +7,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <fstream>
+#include <string>
 
 
 using namespace std;
@@ -68,6 +70,80 @@ void IncrementoDaCobra (vector <Snake>&Cobra, bool CobraHorizontal, bool CobraVe
     }
 }
 
+void salvarRanking(const string& nome, int &pontuacao)        //salva a pontuacao no arquivo
+{
+    ofstream arquivoS;
+    arquivoS.open("ranking.txt", std::ios_base::app);
+    if (arquivoS.is_open())
+
+    {arquivoS << "Nome: " << nome <<  endl;
+        arquivoS << "Pontuacao: " << pontuacao <<  endl << endl;
+        arquivoS.close();}
+
+
+        }
+
+        ///recursividade (ordenando rank)
+
+void exibirRankingRecursivo(vector<pair<int, string>>& ranking, int esquerda, int direita)
+{
+    if (esquerda < direita)
+    {
+        int pivo = ranking[direita].first;
+        int i = esquerda - 1;
+        for (int j = esquerda; j <= direita - 1; j++)
+        {
+            if (ranking[j].first > pivo)
+            {
+                i++;
+                swap(ranking[i], ranking[j]);
+            }
+        }
+        swap(ranking[i + 1], ranking[direita]);
+        int indice = i + 1;
+        exibirRankingRecursivo(ranking, esquerda, indice - 1);
+        exibirRankingRecursivo(ranking, indice + 1, direita);
+    }
+}
+
+void exibirRanking() ///exibi rank ordenado em tela
+{
+    ifstream arquivoS;
+    string linha;
+    vector<pair<int, string>> ranking;
+    arquivoS.open("ranking.txt");
+    if (arquivoS.is_open())
+    {
+        int pontos;
+        string nome;
+        while (arquivoS >> linha)
+        {
+            if (linha == "Pontuacao:")
+            {
+                arquivoS >> pontos;
+                ranking.push_back(make_pair(pontos, nome));
+            }
+            else if (linha == "Nome:")
+            {
+                arquivoS >> nome;
+            }
+        }
+        arquivoS.close();
+
+        exibirRankingRecursivo(ranking, 0, ranking.size() - 1);
+
+        cout << "Ranking:" << endl;
+        for (const auto& pair : ranking)
+        {
+            cout << pair.second << " - " << pair.first << endl;
+        }
+    }
+    else
+    {
+        cout << "Erro ao abrir o arquivo de ranking." << endl;
+    }
+}
+
 int main()
 {
     ///ALERTA: NAO MODIFICAR O TRECHO DE CODIGO, A SEGUIR.
@@ -88,6 +164,8 @@ int main()
 
     int menu;
     string nome;
+    int pontuacao = 0;
+    exibirRanking();
     int repetir = 0;
     int TamanhoCobra = 3;
     vector <Snake> Cobra;
@@ -164,7 +242,9 @@ int main()
                 bool macaNoJogo = false;
                 auto inicio = steady_clock::now();
                 milliseconds velocidade(750);
+                milliseconds velocidadeTecla(500);
                 auto inicioCobra = high_resolution_clock::now();
+                auto inicioCobraMovimento = high_resolution_clock::now(); //Bloqueio de tecla
                 CobraHorizontal = true;
                 CabecaDireita= true;
 
@@ -251,6 +331,9 @@ int main()
                         inicioCobra = agoraCobra;
                     }
 
+                    auto agoraCobraMovimento = high_resolution_clock::now();
+                    auto passouCobraMovimento = duration_cast<milliseconds>(agoraCobraMovimento - inicioCobraMovimento);
+
                     ///executa os movimentos
                     if (_kbhit())
                     {
@@ -259,51 +342,55 @@ int main()
                         {
                         case 72:
                         case 'w': ///cima
-                            if(CobraHorizontal==true){
-                            MovimentoCobra(Cobra);
-                            Cobra[0].x--;
-                            CobraVertical=true;
-                            CobraHorizontal=false;
-                            CabecaCima = true;
-                            CabecaBaixo = CabecaDireita = CabecaEsquerda = false;
+                            if(CobraHorizontal==true && passouCobraMovimento >= velocidadeTecla){
+                                MovimentoCobra(Cobra);
+                                Cobra[0].x--;
+                                CobraVertical=true;
+                                CobraHorizontal=false;
+                                CabecaCima = true;
+                                CabecaBaixo = CabecaDireita = CabecaEsquerda = false;
+                                inicioCobraMovimento = agoraCobraMovimento;
+                                inicioCobra = agoraCobraMovimento;
                             }
                             break;
                         case 80:
                         case 's': ///baixo
-                            if(CobraHorizontal==true){
-                            MovimentoCobra(Cobra);
-                            Cobra[0].x++;
-                            CobraVertical=true;
-                            CobraHorizontal=false;
-                            CabecaBaixo = true;
-                            CabecaCima = CabecaDireita = CabecaEsquerda = false;
+                            if(CobraHorizontal==true && passouCobraMovimento >= velocidadeTecla){
+                                MovimentoCobra(Cobra);
+                                Cobra[0].x++;
+                                CobraVertical=true;
+                                CobraHorizontal=false;
+                                CabecaBaixo = true;
+                                CabecaCima = CabecaDireita = CabecaEsquerda = false;
+                                inicioCobraMovimento = agoraCobraMovimento;
+                                inicioCobra = agoraCobraMovimento;
                             }
                             break;
                         case 75:
                         case 'a': ///esquerda
-                            if(CobraVertical==true){
-                            MovimentoCobra(Cobra);
-                            Cobra[0].y--;
-                            CobraVertical=false;
-                            CobraHorizontal=true;
-                            CabecaEsquerda = true;
-                            CabecaCima = CabecaBaixo = CabecaDireita = false;
+                            if(CobraVertical==true && passouCobraMovimento >= velocidadeTecla){
+                                MovimentoCobra(Cobra);
+                                Cobra[0].y--;
+                                CobraVertical=false;
+                                CobraHorizontal=true;
+                                CabecaEsquerda = true;
+                                CabecaCima = CabecaBaixo = CabecaDireita = false;
+                                inicioCobraMovimento = agoraCobraMovimento;
+                                inicioCobra = agoraCobraMovimento;
                             }
                             break;
                         case 77:
                         case 'd': ///direita
-                            if(CobraVertical==true){
-                            MovimentoCobra(Cobra);
-                            Cobra[0].y++;
-                            CobraVertical=false;
-                            CobraHorizontal=true;
-                            CabecaDireita = true;
-                            CabecaCima = CabecaBaixo = CabecaEsquerda = false;
+                            if(CobraVertical==true && passouCobraMovimento >= velocidadeTecla){
+                                MovimentoCobra(Cobra);
+                                Cobra[0].y++;
+                                CobraVertical=false;
+                                CobraHorizontal=true;
+                                CabecaDireita = true;
+                                CabecaCima = CabecaBaixo = CabecaEsquerda = false;
+                                inicioCobraMovimento = agoraCobraMovimento;
+                                inicioCobra = agoraCobraMovimento;
                             }
-                            break;
-                        case 'o': ///TECLA PARA TESTAR O VERIFCADOR DE MOVIMENTO/ POR QUE NAO TEM AINDA O CHRONO. DEPOIS DO CHRONO TIRAR ISSO
-                            CobraVertical=true;
-                            CabecaDireita = true;
                             break;
                         }
 
@@ -311,14 +398,16 @@ int main()
                     //tempo em tela
                     final = steady_clock::now();
                     auto tempo = final - inicio;
-                    cout << "   TEMPO: " << duration_cast<seconds>(tempo).count();
+                    cout << "   TEMPO: " << duration_cast<seconds>(tempo).count() << endl;
+                    cout << " PONTUACAO: " << pontuacao; //pontuacao em tela
 
                     geraMaca(m, macaNoJogo);
 
                     if (m[Cobra[0].x][Cobra[0].y] == 2) {
-                        IncrementoDaCobra(Cobra,CobraHorizontal, CobraVertical, CabecaCima, CabecaBaixo, CabecaDireita, CabecaEsquerda, m);
                         m[Cobra[0].x][Cobra[0].y] = 0;
+                        IncrementoDaCobra(Cobra,CobraHorizontal, CobraVertical, CabecaCima, CabecaBaixo, CabecaDireita, CabecaEsquerda, m);
                         macaNoJogo = false;
+                        pontuacao+=10; //somando 10 à pontuacao
                     }
 
                     if (CobraViva.vivo == true && m[Cobra[0].x][Cobra[0].y] == 1) {
@@ -337,14 +426,20 @@ int main()
 
 
                 }; //fim do laco do jogo
+                if(CobraViva.vivo == false){
+                   PlaySound(TEXT("morreu.wav"), NULL, SND_ASYNC); //som morte cobra
+                }
                 if (CobraViva.vivo == false) {
                     system ("cls");
-                    cout<<"Voce perdeu o jogo"<<endl;
+                    salvarRanking(nome,pontuacao);
+                    exibirRanking();
+                    cout<< endl << "Voce perdeu o jogo"<<endl;
                     cout<<"Jogo feito por:"<<endl<<"Luiz Antonio Haenisch"<<endl<<"Carlos Henrique Okarenski Ramos Depieri"<<endl<<"Isabela Silverio Cardoso Pereira"<<endl;
                     cout<<"Professor: Alex Luciano"<<endl;
                     cout<<"Quer jogar novamente?"<<endl;
-                    cout<<"Digite 1 para jogar de novo ou 0 para sair"<<endl;
+                    cout<<"Digite 1 para jogar de novo ou 0 retornar ao menu"<<endl;
                     cin>>repetir;
+
                     system ("cls");
                 }
             }
@@ -368,10 +463,10 @@ int main()
             system ("cls");
             break;
         case 3: //Rank
-            system ("cls");
 
+            system("cls");
+            exibirRanking();
             system("pause");
-            system ("cls");
             break;
         case 4: // Obrigado por jogar
 
