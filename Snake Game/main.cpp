@@ -242,7 +242,9 @@ int main()
                 bool macaNoJogo = false;
                 auto inicio = steady_clock::now();
                 milliseconds velocidade(750);
+                milliseconds velocidadeTecla(500);
                 auto inicioCobra = high_resolution_clock::now();
+                auto inicioCobraMovimento = high_resolution_clock::now(); //Bloqueio de tecla
                 CobraHorizontal = true;
                 CabecaDireita= true;
 
@@ -329,6 +331,9 @@ int main()
                         inicioCobra = agoraCobra;
                     }
 
+                    auto agoraCobraMovimento = high_resolution_clock::now();
+                    auto passouCobraMovimento = duration_cast<milliseconds>(agoraCobraMovimento - inicioCobraMovimento);
+
                     ///executa os movimentos
                     if (_kbhit())
                     {
@@ -337,51 +342,55 @@ int main()
                         {
                         case 72:
                         case 'w': ///cima
-                            if(CobraHorizontal==true){
-                            MovimentoCobra(Cobra);
-                            Cobra[0].x--;
-                            CobraVertical=true;
-                            CobraHorizontal=false;
-                            CabecaCima = true;
-                            CabecaBaixo = CabecaDireita = CabecaEsquerda = false;
+                            if(CobraHorizontal==true && passouCobraMovimento >= velocidadeTecla){
+                                MovimentoCobra(Cobra);
+                                Cobra[0].x--;
+                                CobraVertical=true;
+                                CobraHorizontal=false;
+                                CabecaCima = true;
+                                CabecaBaixo = CabecaDireita = CabecaEsquerda = false;
+                                inicioCobraMovimento = agoraCobraMovimento;
+                                inicioCobra = agoraCobraMovimento;
                             }
                             break;
                         case 80:
                         case 's': ///baixo
-                            if(CobraHorizontal==true){
-                            MovimentoCobra(Cobra);
-                            Cobra[0].x++;
-                            CobraVertical=true;
-                            CobraHorizontal=false;
-                            CabecaBaixo = true;
-                            CabecaCima = CabecaDireita = CabecaEsquerda = false;
+                            if(CobraHorizontal==true && passouCobraMovimento >= velocidadeTecla){
+                                MovimentoCobra(Cobra);
+                                Cobra[0].x++;
+                                CobraVertical=true;
+                                CobraHorizontal=false;
+                                CabecaBaixo = true;
+                                CabecaCima = CabecaDireita = CabecaEsquerda = false;
+                                inicioCobraMovimento = agoraCobraMovimento;
+                                inicioCobra = agoraCobraMovimento;
                             }
                             break;
                         case 75:
                         case 'a': ///esquerda
-                            if(CobraVertical==true){
-                            MovimentoCobra(Cobra);
-                            Cobra[0].y--;
-                            CobraVertical=false;
-                            CobraHorizontal=true;
-                            CabecaEsquerda = true;
-                            CabecaCima = CabecaBaixo = CabecaDireita = false;
+                            if(CobraVertical==true && passouCobraMovimento >= velocidadeTecla){
+                                MovimentoCobra(Cobra);
+                                Cobra[0].y--;
+                                CobraVertical=false;
+                                CobraHorizontal=true;
+                                CabecaEsquerda = true;
+                                CabecaCima = CabecaBaixo = CabecaDireita = false;
+                                inicioCobraMovimento = agoraCobraMovimento;
+                                inicioCobra = agoraCobraMovimento;
                             }
                             break;
                         case 77:
                         case 'd': ///direita
-                            if(CobraVertical==true){
-                            MovimentoCobra(Cobra);
-                            Cobra[0].y++;
-                            CobraVertical=false;
-                            CobraHorizontal=true;
-                            CabecaDireita = true;
-                            CabecaCima = CabecaBaixo = CabecaEsquerda = false;
+                            if(CobraVertical==true && passouCobraMovimento >= velocidadeTecla){
+                                MovimentoCobra(Cobra);
+                                Cobra[0].y++;
+                                CobraVertical=false;
+                                CobraHorizontal=true;
+                                CabecaDireita = true;
+                                CabecaCima = CabecaBaixo = CabecaEsquerda = false;
+                                inicioCobraMovimento = agoraCobraMovimento;
+                                inicioCobra = agoraCobraMovimento;
                             }
-                            break;
-                        case 'o': ///TECLA PARA TESTAR O VERIFCADOR DE MOVIMENTO/ POR QUE NAO TEM AINDA O CHRONO. DEPOIS DO CHRONO TIRAR ISSO
-                            CobraVertical=true;
-                            CabecaDireita = true;
                             break;
                         }
 
