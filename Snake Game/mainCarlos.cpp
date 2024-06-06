@@ -215,6 +215,29 @@ int main()
                         cout << "\n";
                     } //fim for mapa
 
+                    auto agoraCobra = high_resolution_clock::now();
+                    auto passouCobra = duration_cast<milliseconds>(agoraCobra - inicioCobra);
+
+                    if (passouCobra >= velocidade) {
+                        if (CabecaCima == true) {
+                            MovimentoCobra(Cobra);
+                            Cobra[0].x--;
+                        }
+                        if (CabecaBaixo == true) {
+                            MovimentoCobra(Cobra);
+                            Cobra[0].x++;
+                        }
+                        if (CabecaDireita == true) {
+                            MovimentoCobra(Cobra);
+                            Cobra[0].y++;
+                        }
+                        if (CabecaEsquerda == true) {
+                            MovimentoCobra(Cobra);
+                            Cobra[0].y--;
+                        }
+                        inicioCobra = agoraCobra;
+                    }
+
                     ///executa os movimentos
                     if (_kbhit())
                     {
@@ -229,9 +252,7 @@ int main()
                             CobraVertical=true;
                             CobraHorizontal=false;
                             CabecaCima = true;
-                            CabecaBaixo = false;
-                            CabecaDireita = false;
-                            CabecaEsquerda = false;
+                            CabecaBaixo = CabecaDireita = CabecaEsquerda = false;
                             }
                             break;
                         case 80:
@@ -241,10 +262,8 @@ int main()
                             Cobra[0].x++;
                             CobraVertical=true;
                             CobraHorizontal=false;
-                            CabecaCima = false;
                             CabecaBaixo = true;
-                            CabecaDireita = false;
-                            CabecaEsquerda = false;
+                            CabecaCima = CabecaDireita = CabecaEsquerda = false;
                             }
                             break;
                         case 75:
@@ -254,10 +273,8 @@ int main()
                             Cobra[0].y--;
                             CobraVertical=false;
                             CobraHorizontal=true;
-                            CabecaCima = false;
-                            CabecaBaixo = false;
-                            CabecaDireita = false;
                             CabecaEsquerda = true;
+                            CabecaCima = CabecaBaixo = CabecaDireita = false;
                             }
                             break;
                         case 77:
@@ -267,10 +284,8 @@ int main()
                             Cobra[0].y++;
                             CobraVertical=false;
                             CobraHorizontal=true;
-                            CabecaCima = false;
-                            CabecaCima = false;
                             CabecaDireita = true;
-                            CabecaEsquerda = false;
+                            CabecaCima = CabecaBaixo = CabecaEsquerda = false;
                             }
                             break;
                         case 'o': ///TECLA PARA TESTAR O VERIFCADOR DE MOVIMENTO/ POR QUE NAO TEM AINDA O CHRONO. DEPOIS DO CHRONO TIRAR ISSO
@@ -298,15 +313,14 @@ int main()
                         Cobra.push_back({5,5});
                         Cobra.push_back({5,4});
                         Cobra.push_back({5,3});
+                        CabecaDireita= true;
+                        CabecaBaixo = false;
+                        CabecaEsquerda = false;
+                        CabecaCima = false;
                         jogo = false;
                     }
 
-                    auto agoraCobra = high_resolution_clock::now();
-                    auto passouCobra = duration_cast<milliseconds>(agoraCobra - inicioCobra);
 
-                    if (passouCobra >= velocidade) {
-
-                    }
 
                 }; //fim do laco do jogo
                 if (CobraViva.vivo == false) {
