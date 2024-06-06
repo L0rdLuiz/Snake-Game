@@ -404,8 +404,8 @@ int main()
                     geraMaca(m, macaNoJogo);
 
                     if (m[Cobra[0].x][Cobra[0].y] == 2) {
-                        IncrementoDaCobra(Cobra,CobraHorizontal, CobraVertical, CabecaCima, CabecaBaixo, CabecaDireita, CabecaEsquerda, m);
                         m[Cobra[0].x][Cobra[0].y] = 0;
+                        IncrementoDaCobra(Cobra,CobraHorizontal, CobraVertical, CabecaCima, CabecaBaixo, CabecaDireita, CabecaEsquerda, m);
                         macaNoJogo = false;
                         pontuacao+=10; //somando 10 à pontuacao
                     }
