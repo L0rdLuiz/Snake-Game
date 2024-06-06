@@ -31,7 +31,7 @@ bool contemApenasLetras(const string& str)   /// verifica se o nome contém apen
 }
 
 void MovimentoCobra(vector <Snake> &Cobra){
-    for(int i = Cobra.size();i>0;i--){
+    for(int i = Cobra.size()-1;i>0;i--){
         Cobra[i]=Cobra[i-1];
         }
     }
@@ -48,12 +48,25 @@ void geraMaca (int m[15][17], bool& macaNoJogo) {
     }
 }
 
-//void IncrementoDaCobra (vector <Snake>&Cobra){
-//    for(int i = 0;i<Cobra.size();;i--){
-//        Cobra[i]
-//    }
-//
-//}
+void IncrementoDaCobra (vector <Snake>&Cobra, bool CobraHorizontal, bool CobraVertical, bool CabecaCima, bool CabecaBaixo, bool CabecaDireita, bool CabecaEsquerda, int m[15][17]){
+    Snake Cauda = Cobra.back();
+    if(CobraHorizontal==true){
+        if(CabecaDireita==true){
+            Cauda.y--;
+        } else if(CabecaEsquerda==true){
+            Cauda.y++;
+        }
+    } else if(CobraVertical==true){
+        if(CabecaCima==true){
+            Cauda.x++;
+        } else if(CabecaBaixo==true){
+            Cauda.x--;
+        }
+    }
+    if(Cauda.x>=0&&Cauda.x<15&&Cauda.y>=0&&Cauda.y<17&&m[Cauda.x][Cauda.y]!=1){
+    Cobra.push_back(Cauda);
+    }
+}
 
 int main()
 {
@@ -303,6 +316,7 @@ int main()
                     geraMaca(m, macaNoJogo);
 
                     if (m[Cobra[0].x][Cobra[0].y] == 2) {
+                        IncrementoDaCobra(Cobra,CobraHorizontal, CobraVertical, CabecaCima, CabecaBaixo, CabecaDireita, CabecaEsquerda, m);
                         m[Cobra[0].x][Cobra[0].y] = 0;
                         macaNoJogo = false;
                     }
