@@ -39,6 +39,15 @@ void MovimentoCobra(vector <Snake> &Cobra){
         }
     }
 
+bool ColisaoCorpoCobra(const vector<Snake>& Cobra){
+    for(int i =1;i<Cobra.size();i++){
+        if(Cobra[0].x==Cobra[i].x&&Cobra[0].y==Cobra[i].y){
+            return true;
+        }
+    }
+    return false;
+}
+
 void geraMaca (int m[15][17], bool& macaNoJogo) {
     int mx = rand() % 15;
     int my = rand() % 17;
@@ -302,7 +311,9 @@ int main()
 
                     auto agoraCobra = high_resolution_clock::now();
                     auto passouCobra = duration_cast<milliseconds>(agoraCobra - inicioCobra);
-
+                    if(ColisaoCorpoCobra(Cobra)){
+                            CobraViva.vivo = false;
+                        }
                     if (passouCobra >= velocidade) {
                         if (CabecaCima == true) {
                             MovimentoCobra(Cobra);
@@ -384,6 +395,9 @@ int main()
                                 inicioCobra = agoraCobraMovimento;
                             }
                             break;
+                            case 'o':
+                            IncrementoDaCobra(Cobra);
+                            break;
                         }
 
 
@@ -419,8 +433,9 @@ int main()
                         CabecaCima = false;
                         jogo = false;
                     }
-
-
+                    if(!CobraViva.vivo){
+                        jogo = false;
+                    }
 
                 }; //fim do laco do jogo
                 if(CobraViva.vivo == false){
