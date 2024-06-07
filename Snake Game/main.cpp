@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <ctime>
 #include <fstream>
 #include <string>
 
@@ -55,14 +56,19 @@ void IncrementoDaCobra (vector <Snake>&Cobra){
     Cobra.push_back(Cauda);
 }
 
-void salvarRanking(const string& nome, int &pontuacao)        //salva a pontuacao no arquivo
+void salvarRanking(const string& nome, int &pontuacao,  int tempoEmSegundos)        //salva a pontuacao no arquivo
 {
     ofstream arquivoS;
     arquivoS.open("ranking.txt", std::ios_base::app);
-    if (arquivoS.is_open())
-
-    {arquivoS << "Nome: " << nome <<  endl;
-        arquivoS << "Pontuacao: " << pontuacao <<  endl << endl;
+    if (arquivoS.is_open()){
+        time_t tempoAtual = time(nullptr); // tempo atual em segundos
+        char dataFormatada[80];
+        strftime(dataFormatada, sizeof(dataFormatada), "%d/%m/%Y %H:%M:%S", localtime(&tempoAtual));
+        arquivoS << "Nome: " << nome <<  endl;
+        arquivoS << "Pontuacao: " << pontuacao <<  endl;
+        arquivoS << "Tempo de Jogo: " << tempoEmSegundos << " segundos" << endl;
+        arquivoS << "Data: " << dataFormatada << endl << endl;
+        arquivoS << endl;
         arquivoS.close();}
 
 
@@ -129,6 +135,8 @@ void exibirRanking() ///exibi rank ordenado em tela
     }
 }
 
+
+
 int main()
 {
     ///ALERTA: NAO MODIFICAR O TRECHO DE CODIGO, A SEGUIR.
@@ -168,16 +176,13 @@ int main()
     bool CabecaEsquerda = false;
     //Variavel para tecla pressionada
     char tecla;
-
     //Variavel para contagem de tempo em tela
-
     auto inicio = steady_clock::now();
     auto final = steady_clock::now();
-
+    int tempoEmSegundos;
     //Gerador de Maçã
     srand (time(NULL));
     bool macaNoJogo = false;
-
     //Cobra viva
     Snake CobraViva;
 
@@ -218,6 +223,8 @@ int main()
 
             system("cls");
             auto inicio = steady_clock::now();
+
+
             do
             {
                 //Botar coisas para repetir aqui
@@ -379,12 +386,17 @@ int main()
                             break;
                         }
 
+
                     }
+
                     //tempo em tela
+
                     final = steady_clock::now();
                     auto tempo = final - inicio;
+
+
                     cout << "   TEMPO: " << duration_cast<seconds>(tempo).count() << endl;
-                    cout << " PONTUACAO: " << pontuacao; //pontuacao em tela
+                    cout << " PONTUACAO: " << pontuacao << endl; //pontuacao em tela
 
                     geraMaca(m, macaNoJogo);
 
@@ -416,7 +428,9 @@ int main()
                 }
                 if (CobraViva.vivo == false) {
                     system ("cls");
-                    salvarRanking(nome,pontuacao);
+                    auto tempo = final - inicio;
+                    int tempoEmSegundos = duration_cast<seconds>(tempo).count(); //tempo no arquivo
+                    salvarRanking(nome,pontuacao, tempoEmSegundos);
                     exibirRanking();
                     cout<< endl << "Voce perdeu o jogo"<<endl;
                     cout<<"Jogo feito por:"<<endl<<"Luiz Antonio Haenisch"<<endl<<"Carlos Henrique Okarenski Ramos Depieri"<<endl<<"Isabela Silverio Cardoso Pereira"<<endl;
@@ -442,6 +456,7 @@ int main()
             cout << "MOVIMENTO: Use W, A, S e D para mover a cobra que se move sempre para frente" << endl;
             cout << "MACAS: Mova-se em direcao as macas para come-las e crescer." << endl;
             cout << "EVITAR COLISOES: Evite colidir com a parede ou com o corpo da cobra." << endl;
+            cout << "PONTUACAO: A cada maca coletada o jogador recebe 10 pontos." << endl;
             cout << "VITORIA: Ao comer 100 macas sem colisoes, voce vence o jogo!" << endl<< endl;
             cout << "BOA SORTE!" << endl << endl;
             system("pause");
