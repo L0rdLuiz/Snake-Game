@@ -48,15 +48,26 @@ bool ColisaoCorpoCobra(const vector<Snake>& Cobra){
     return false;
 }
 
-void geraMaca (int m[15][17], bool& macaNoJogo) {
-    int mx = rand() % 15;
-    int my = rand() % 17;
-    if (macaNoJogo == false) {
-        if (m[mx][my] != 1) {
+void geraMaca(int m[15][17], bool& macaNoJogo, const vector<Snake>& Cobra) {
+    if (!macaNoJogo) {
+        int mx, my;
+        bool posicaoValida;
+        do {
+            mx = rand() % 15;
+            my = rand() % 17;
 
-            m[mx][my] = 2;
-            macaNoJogo = true;
-        }
+            // Verificar se a posição está ocupada pelo corpo da cobra
+            posicaoValida = true;
+            for (int i = 0; i < Cobra.size(); i++) {
+                if (Cobra[i].x == mx && Cobra[i].y == my) {
+                    posicaoValida = false;
+                    break;
+                }
+            }
+        } while (m[mx][my] == 1 || !posicaoValida);
+
+        m[mx][my] = 2;
+        macaNoJogo = true;
     }
 }
 
@@ -412,7 +423,7 @@ int main()
                     cout << "   TEMPO: " << duration_cast<seconds>(tempo).count() << endl;
                     cout << " PONTUACAO: " << pontuacao << endl; //pontuacao em tela
 
-                    geraMaca(m, macaNoJogo);
+                    geraMaca(m, macaNoJogo, Cobra);
 
                     if (m[Cobra[0].x][Cobra[0].y] == 2) {
                         m[Cobra[0].x][Cobra[0].y] = 0;
