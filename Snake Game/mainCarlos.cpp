@@ -50,24 +50,18 @@ void geraMaca (int m[15][17], bool& macaNoJogo) {
     }
 }
 
-void IncrementoDaCobra (vector <Snake>&Cobra, bool CobraHorizontal, bool CobraVertical, bool CabecaCima, bool CabecaBaixo, bool CabecaDireita, bool CabecaEsquerda, int m[15][17]){
+void IncrementoDaCobra (vector <Snake>&Cobra){
     Snake Cauda = Cobra.back();
-    if(CobraHorizontal==true){
-        if(CabecaDireita==true){
-            Cauda.y--;
-        } else if(CabecaEsquerda==true){
-            Cauda.y++;
-        }
-    } else if(CobraVertical==true){
-        if(CabecaCima==true){
-            Cauda.x++;
-        } else if(CabecaBaixo==true){
-            Cauda.x--;
-        }
-    }
-    if(Cauda.x>=0&&Cauda.x<15&&Cauda.y>=0&&Cauda.y<17&&m[Cauda.x][Cauda.y]!=1){
     Cobra.push_back(Cauda);
+}
+
+bool ColisaoCorpoCobra(const vector<Snake>& Cobra){
+    for(int i =1;i<Cobra.size();i++){
+        if(Cobra[0].x==Cobra[i].x&&Cobra[0].y==Cobra[i].y){
+            return true;
+        }
     }
+    return false;
 }
 
 void salvarRanking(const string& nome, int &pontuacao)        //salva a pontuacao no arquivo
@@ -310,7 +304,9 @@ int main()
 
                     auto agoraCobra = high_resolution_clock::now();
                     auto passouCobra = duration_cast<milliseconds>(agoraCobra - inicioCobra);
-
+                        if(ColisaoCorpoCobra(Cobra)){
+                            CobraViva.vivo = false;
+                        }
                     if (passouCobra >= velocidade) {
                         if (CabecaCima == true) {
                             MovimentoCobra(Cobra);
@@ -392,6 +388,9 @@ int main()
                                 inicioCobra = agoraCobraMovimento;
                             }
                             break;
+                        case 'o':
+                            IncrementoDaCobra(Cobra);
+                            break;
                         }
 
                     }
@@ -405,7 +404,7 @@ int main()
 
                     if (m[Cobra[0].x][Cobra[0].y] == 2) {
                         m[Cobra[0].x][Cobra[0].y] = 0;
-                        IncrementoDaCobra(Cobra,CobraHorizontal, CobraVertical, CabecaCima, CabecaBaixo, CabecaDireita, CabecaEsquerda, m);
+                        IncrementoDaCobra(Cobra);
                         macaNoJogo = false;
                         pontuacao+=10; //somando 10 à pontuacao
                     }
@@ -422,7 +421,9 @@ int main()
                         CabecaCima = false;
                         jogo = false;
                     }
-
+                    if(!CobraViva.vivo){
+                        jogo = false;
+                    }
 
 
                 }; //fim do laco do jogo
