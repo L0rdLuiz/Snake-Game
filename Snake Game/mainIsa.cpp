@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <ctime>
 #include <fstream>
 #include <string>
 
@@ -59,12 +60,15 @@ void salvarRanking(const string& nome, int &pontuacao,  int tempoEmSegundos)    
 {
     ofstream arquivoS;
     arquivoS.open("ranking.txt", std::ios_base::app);
-    if (arquivoS.is_open())
-
-    {arquivoS << "Nome: " << nome <<  endl;
+    if (arquivoS.is_open()){
+        time_t tempoAtual = time(nullptr); // tempo atual em segundos
+        char dataFormatada[80];
+        strftime(dataFormatada, sizeof(dataFormatada), "%d/%m/%Y %H:%M:%S", localtime(&tempoAtual));
+        arquivoS << "Nome: " << nome <<  endl;
         arquivoS << "Pontuacao: " << pontuacao <<  endl;
         arquivoS << "Tempo de Jogo: " << tempoEmSegundos << " segundos" << endl;
-
+        arquivoS << "Data: " << dataFormatada << endl << endl;
+        arquivoS << endl;
         arquivoS.close();}
 
 
