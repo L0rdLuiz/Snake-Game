@@ -176,18 +176,13 @@ int main()
     bool CabecaEsquerda = false;
     //Variavel para tecla pressionada
     char tecla;
-
     //Variavel para contagem de tempo em tela
-
     auto inicio = steady_clock::now();
     auto final = steady_clock::now();
     int tempoEmSegundos;
-
-
     //Gerador de Maçã
     srand (time(NULL));
     bool macaNoJogo = false;
-
     //Cobra viva
     Snake CobraViva;
 
@@ -242,8 +237,6 @@ int main()
                 milliseconds velocidadeTecla(500);
                 auto inicioCobra = high_resolution_clock::now();
                 auto inicioCobraMovimento = high_resolution_clock::now(); //Bloqueio de tecla
-
-                //auto tempo = final - inicio;
                 CobraHorizontal = true;
                 CabecaDireita= true;
 
@@ -435,9 +428,8 @@ int main()
                 }
                 if (CobraViva.vivo == false) {
                     system ("cls");
-                                        auto tempo = final - inicio;
-
-                    int tempoEmSegundos = duration_cast<seconds>(tempo).count();
+                    auto tempo = final - inicio;
+                    int tempoEmSegundos = duration_cast<seconds>(tempo).count(); //tempo no arquivo
                     salvarRanking(nome,pontuacao, tempoEmSegundos);
                     exibirRanking();
                     cout<< endl << "Voce perdeu o jogo"<<endl;
