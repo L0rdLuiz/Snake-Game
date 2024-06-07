@@ -50,34 +50,21 @@ void geraMaca (int m[15][17], bool& macaNoJogo) {
     }
 }
 
-void IncrementoDaCobra (vector <Snake>&Cobra, bool CobraHorizontal, bool CobraVertical, bool CabecaCima, bool CabecaBaixo, bool CabecaDireita, bool CabecaEsquerda, int m[15][17]){
+void IncrementoDaCobra (vector <Snake>&Cobra){
     Snake Cauda = Cobra.back();
-    if(CobraHorizontal==true){
-        if(CabecaDireita==true){
-            Cauda.y--;
-        } else if(CabecaEsquerda==true){
-            Cauda.y++;
-        }
-    } else if(CobraVertical==true){
-        if(CabecaCima==true){
-            Cauda.x++;
-        } else if(CabecaBaixo==true){
-            Cauda.x--;
-        }
-    }
-    if(Cauda.x>=0&&Cauda.x<15&&Cauda.y>=0&&Cauda.y<17&&m[Cauda.x][Cauda.y]!=1){
     Cobra.push_back(Cauda);
-    }
 }
 
-void salvarRanking(const string& nome, int &pontuacao)        //salva a pontuacao no arquivo
+void salvarRanking(const string& nome, int &pontuacao,  int tempoEmSegundos)        //salva a pontuacao no arquivo
 {
     ofstream arquivoS;
     arquivoS.open("ranking.txt", std::ios_base::app);
     if (arquivoS.is_open())
 
     {arquivoS << "Nome: " << nome <<  endl;
-        arquivoS << "Pontuacao: " << pontuacao <<  endl << endl;
+        arquivoS << "Pontuacao: " << pontuacao <<  endl;
+        arquivoS << "Tempo de Jogo: " << tempoEmSegundos << " segundos" << endl;
+
         arquivoS.close();}
 
 
@@ -144,6 +131,8 @@ void exibirRanking() ///exibi rank ordenado em tela
     }
 }
 
+
+
 int main()
 {
     ///ALERTA: NAO MODIFICAR O TRECHO DE CODIGO, A SEGUIR.
@@ -188,6 +177,8 @@ int main()
 
     auto inicio = steady_clock::now();
     auto final = steady_clock::now();
+    int tempoEmSegundos;
+
 
     //Gerador de Maçã
     srand (time(NULL));
@@ -233,6 +224,8 @@ int main()
 
             system("cls");
             auto inicio = steady_clock::now();
+
+
             do
             {
                 //Botar coisas para repetir aqui
@@ -242,7 +235,11 @@ int main()
                 bool macaNoJogo = false;
                 auto inicio = steady_clock::now();
                 milliseconds velocidade(750);
+                milliseconds velocidadeTecla(500);
                 auto inicioCobra = high_resolution_clock::now();
+                auto inicioCobraMovimento = high_resolution_clock::now(); //Bloqueio de tecla
+
+                //auto tempo = final - inicio;
                 CobraHorizontal = true;
                 CabecaDireita= true;
 
@@ -329,6 +326,9 @@ int main()
                         inicioCobra = agoraCobra;
                     }
 
+                    auto agoraCobraMovimento = high_resolution_clock::now();
+                    auto passouCobraMovimento = duration_cast<milliseconds>(agoraCobraMovimento - inicioCobraMovimento);
+
                     ///executa os movimentos
                     if (_kbhit())
                     {
@@ -337,66 +337,75 @@ int main()
                         {
                         case 72:
                         case 'w': ///cima
-                            if(CobraHorizontal==true){
-                            MovimentoCobra(Cobra);
-                            Cobra[0].x--;
-                            CobraVertical=true;
-                            CobraHorizontal=false;
-                            CabecaCima = true;
-                            CabecaBaixo = CabecaDireita = CabecaEsquerda = false;
+                            if(CobraHorizontal==true && passouCobraMovimento >= velocidadeTecla){
+                                MovimentoCobra(Cobra);
+                                Cobra[0].x--;
+                                CobraVertical=true;
+                                CobraHorizontal=false;
+                                CabecaCima = true;
+                                CabecaBaixo = CabecaDireita = CabecaEsquerda = false;
+                                inicioCobraMovimento = agoraCobraMovimento;
+                                inicioCobra = agoraCobraMovimento;
                             }
                             break;
                         case 80:
                         case 's': ///baixo
-                            if(CobraHorizontal==true){
-                            MovimentoCobra(Cobra);
-                            Cobra[0].x++;
-                            CobraVertical=true;
-                            CobraHorizontal=false;
-                            CabecaBaixo = true;
-                            CabecaCima = CabecaDireita = CabecaEsquerda = false;
+                            if(CobraHorizontal==true && passouCobraMovimento >= velocidadeTecla){
+                                MovimentoCobra(Cobra);
+                                Cobra[0].x++;
+                                CobraVertical=true;
+                                CobraHorizontal=false;
+                                CabecaBaixo = true;
+                                CabecaCima = CabecaDireita = CabecaEsquerda = false;
+                                inicioCobraMovimento = agoraCobraMovimento;
+                                inicioCobra = agoraCobraMovimento;
                             }
                             break;
                         case 75:
                         case 'a': ///esquerda
-                            if(CobraVertical==true){
-                            MovimentoCobra(Cobra);
-                            Cobra[0].y--;
-                            CobraVertical=false;
-                            CobraHorizontal=true;
-                            CabecaEsquerda = true;
-                            CabecaCima = CabecaBaixo = CabecaDireita = false;
+                            if(CobraVertical==true && passouCobraMovimento >= velocidadeTecla){
+                                MovimentoCobra(Cobra);
+                                Cobra[0].y--;
+                                CobraVertical=false;
+                                CobraHorizontal=true;
+                                CabecaEsquerda = true;
+                                CabecaCima = CabecaBaixo = CabecaDireita = false;
+                                inicioCobraMovimento = agoraCobraMovimento;
+                                inicioCobra = agoraCobraMovimento;
                             }
                             break;
                         case 77:
                         case 'd': ///direita
-                            if(CobraVertical==true){
-                            MovimentoCobra(Cobra);
-                            Cobra[0].y++;
-                            CobraVertical=false;
-                            CobraHorizontal=true;
-                            CabecaDireita = true;
-                            CabecaCima = CabecaBaixo = CabecaEsquerda = false;
+                            if(CobraVertical==true && passouCobraMovimento >= velocidadeTecla){
+                                MovimentoCobra(Cobra);
+                                Cobra[0].y++;
+                                CobraVertical=false;
+                                CobraHorizontal=true;
+                                CabecaDireita = true;
+                                CabecaCima = CabecaBaixo = CabecaEsquerda = false;
+                                inicioCobraMovimento = agoraCobraMovimento;
+                                inicioCobra = agoraCobraMovimento;
                             }
-                            break;
-                        case 'o': ///TECLA PARA TESTAR O VERIFCADOR DE MOVIMENTO/ POR QUE NAO TEM AINDA O CHRONO. DEPOIS DO CHRONO TIRAR ISSO
-                            CobraVertical=true;
-                            CabecaDireita = true;
                             break;
                         }
 
+
                     }
+
                     //tempo em tela
+
                     final = steady_clock::now();
                     auto tempo = final - inicio;
+
+
                     cout << "   TEMPO: " << duration_cast<seconds>(tempo).count() << endl;
-                    cout << " PONTUACAO: " << pontuacao; //pontuacao em tela
+                    cout << " PONTUACAO: " << pontuacao << endl; //pontuacao em tela
 
                     geraMaca(m, macaNoJogo);
 
                     if (m[Cobra[0].x][Cobra[0].y] == 2) {
-                        IncrementoDaCobra(Cobra,CobraHorizontal, CobraVertical, CabecaCima, CabecaBaixo, CabecaDireita, CabecaEsquerda, m);
                         m[Cobra[0].x][Cobra[0].y] = 0;
+                        IncrementoDaCobra(Cobra);
                         macaNoJogo = false;
                         pontuacao+=10; //somando 10 à pontuacao
                     }
@@ -422,7 +431,10 @@ int main()
                 }
                 if (CobraViva.vivo == false) {
                     system ("cls");
-                    salvarRanking(nome,pontuacao);
+                                        auto tempo = final - inicio;
+
+                    int tempoEmSegundos = duration_cast<seconds>(tempo).count();
+                    salvarRanking(nome,pontuacao, tempoEmSegundos);
                     exibirRanking();
                     cout<< endl << "Voce perdeu o jogo"<<endl;
                     cout<<"Jogo feito por:"<<endl<<"Luiz Antonio Haenisch"<<endl<<"Carlos Henrique Okarenski Ramos Depieri"<<endl<<"Isabela Silverio Cardoso Pereira"<<endl;
@@ -448,6 +460,7 @@ int main()
             cout << "MOVIMENTO: Use W, A, S e D para mover a cobra que se move sempre para frente" << endl;
             cout << "MACAS: Mova-se em direcao as macas para come-las e crescer." << endl;
             cout << "EVITAR COLISOES: Evite colidir com a parede ou com o corpo da cobra." << endl;
+            cout << "PONTUACAO: A cada maca coletada o jogador recebe 10 pontos." << endl;
             cout << "VITORIA: Ao comer 100 macas sem colisoes, voce vence o jogo!" << endl<< endl;
             cout << "BOA SORTE!" << endl << endl;
             system("pause");
