@@ -19,6 +19,7 @@ using namespace std::chrono;
 struct Snake {
     int x, y;
     bool vivo;
+    int comeu;
 };
 
 bool contemApenasLetras(const string& str)   /// verifica se o nome contém apenas letras
@@ -155,8 +156,6 @@ void exibirRanking() ///exibi rank ordenado em tela
     }
 }
 
-
-
 int main()
 {
     ///ALERTA: NAO MODIFICAR O TRECHO DE CODIGO, A SEGUIR.
@@ -205,6 +204,7 @@ int main()
     bool macaNoJogo = false;
     //Cobra viva
     Snake CobraViva;
+    milliseconds diminuirVelocidade(45);
 
     do
     {
@@ -251,7 +251,9 @@ int main()
                 PlaySound(TEXT("trilha.wav"), NULL, SND_ASYNC); //musica
                 bool jogo = true;
                 CobraViva.vivo = true;
+                CobraViva.comeu = 0;
                 bool macaNoJogo = false;
+                bool aumentoVelocidade = false;
                 auto inicio = steady_clock::now();
                 milliseconds velocidade(750);
                 milliseconds velocidadeTecla(500);
@@ -430,6 +432,7 @@ int main()
                         IncrementoDaCobra(Cobra);
                         macaNoJogo = false;
                         pontuacao+=10; //somando 10 à pontuacao
+                        CobraViva.comeu += 1; //Contador de maçãs comidas
                     }
 
                     if (CobraViva.vivo == true && m[Cobra[0].x][Cobra[0].y] == 1) {
@@ -446,6 +449,13 @@ int main()
                     }
                     if(!CobraViva.vivo){
                         jogo = false;
+                    }
+
+                    if (CobraViva.comeu % 5 == 0 && CobraViva.comeu != 0 && aumentoVelocidade == false) {
+                        velocidade -= diminuirVelocidade;
+                        aumentoVelocidade = true;
+                    } else if (CobraViva.comeu % 5 != 0 && aumentoVelocidade == true) {
+                        aumentoVelocidade = false;
                     }
 
                 }; //fim do laco do jogo
