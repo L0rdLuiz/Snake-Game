@@ -244,7 +244,6 @@ int main()
             system("cls");
             auto inicio = steady_clock::now();
 
-
             do
             {
                 //Botar coisas para repetir aqui
@@ -445,7 +444,6 @@ int main()
                         CabecaBaixo = false;
                         CabecaEsquerda = false;
                         CabecaCima = false;
-                        jogo = false;
                     }
                     if(!CobraViva.vivo){
                         jogo = false;
@@ -477,8 +475,7 @@ int main()
 
                     system ("cls");
                 }
-            }
-            while (repetir == 1);
+            } while (repetir == 1);
             break;}
         case 2: //Sobre o jogo
             system ("cls");
