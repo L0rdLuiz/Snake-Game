@@ -177,7 +177,6 @@ int main()
     int menu;
     string nome;
     int pontuacao = 0;
-    exibirRanking();
     int repetir = 0;
     int TamanhoCobra = 3;
     vector <Snake> Cobra;
@@ -465,7 +464,7 @@ int main()
                     auto tempo = final - inicio;
                     int tempoEmSegundos = duration_cast<seconds>(tempo).count(); //tempo no arquivo
                     salvarRanking(nome,pontuacao, tempoEmSegundos);
-                    exibirRanking();
+                    cout<<nome<<" Voce fez: "<<pontuacao<<" pontos.";
                     cout<< endl << "Voce perdeu o jogo"<<endl;
                     cout<<"Jogo feito por:"<<endl<<"Luiz Antonio Haenisch"<<endl<<"Carlos Henrique Okarenski Ramos Depieri"<<endl<<"Isabela Silverio Cardoso Pereira"<<endl;
                     cout<<"Professor: Alex Luciano"<<endl;
