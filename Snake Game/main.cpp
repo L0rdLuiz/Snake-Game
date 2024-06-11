@@ -15,7 +15,7 @@
 using namespace std;
 using namespace std::chrono;
 
-struct Snake {
+struct Snake { ///STRUC COBRA
     int x, y;
     bool vivo;
     int comeu;
@@ -33,15 +33,15 @@ bool contemApenasLetras(const std::string& str) {
     return true;
 }
 
-void MovimentoCobra(vector <Snake> &Cobra) {
-    for(int i = Cobra.size()-1;i>0;i--){
-        Cobra[i]=Cobra[i-1];
+void MovimentoCobra(vector <Snake> &Cobra) { ///MOVIMENTO DO CORPO
+    for(int i = Cobra.size()-1;i>0;i--){     ///FOR DO TAMANHO DA COBRA SE MOVIMENTO ATÉ A CABEÇA
+        Cobra[i]=Cobra[i-1];                 ///POSIÇÃO FINAL RECEBE A ANTERIOR 
         }
 }
 
-bool ColisaoCorpoCobra(const vector<Snake>& Cobra) {
-    for(int i =1;i<Cobra.size();i++){
-        if(Cobra[0].x==Cobra[i].x&&Cobra[0].y==Cobra[i].y){
+bool ColisaoCorpoCobra(const vector<Snake>& Cobra) {        ///COLISAO DO CORPO
+    for(int i =1;i<Cobra.size();i++){                       ///FOR DO PESCOÇO PRA FRENTE, POIS NÃO PRECISA DA CABEÇÇA
+        if(Cobra[0].x==Cobra[i].x&&Cobra[0].y==Cobra[i].y){ ///VERIFICA SE A CABEÇA ESTA ENCOSTADA EM ALGUMA PARTE DO CORPO TODO
             return true;
         }
     }
@@ -71,9 +71,9 @@ void geraMaca(int m[15][17], bool& macaNoJogo, const vector<Snake>& Cobra) {
     }
 }
 
-void IncrementoDaCobra (vector <Snake>&Cobra) {
-    Snake Cauda = Cobra.back();
-    Cobra.push_back(Cauda);
+void IncrementoDaCobra (vector <Snake>&Cobra) { ///AUMENTA O TAMANHO DO CORPO QUANDO PEGA A MAÇA
+    Snake Cauda = Cobra.back();                 ///STRUCT CALDA RECEBE A ULTIMA POSIÇÃO
+    Cobra.push_back(Cauda);                     ///VECTOR COBRA RECEBE A POSIÇÃO DO STRUCT CAUDA
 }
 
 void salvarRanking(const string& nome, int &pontuacao,  int tempoEmSegundos) {  //salva a pontuacao no arquivo
@@ -281,18 +281,18 @@ int main()
                     ///Imprime o jogo: mapa e personagem.
                     for (int i = 0; i < 15; i++) {
                         for (int j = 0; j < 17; j++) {
-                            bool CobraOn = false;
+                            bool CobraOn = false;               ///UMA VARIAVEL BOOLEANA PARA QUEBRAR A IMPRESÃO DA COBRA
                             if(i==Cobra[0].x&&j==Cobra[0].y) {
                                 cout<<char (79);
                             }else {
-                                for(auto const &Snake:Cobra) {
+                                for(auto const &Snake:Cobra) {  ///LOOP PARA IMPRIMIR A COBRA NO JOGO
                                     if(i==Snake.x&&j==Snake.y){
                                     cout << char(111); //personagem
-                                    CobraOn = true;
-                                    break;
+                                    CobraOn = true;             ///QUANDO RECEBE TRUE ELE CONTINUA O CODIGO E VOLTA A SER FALSE NO PROXIMO CICLO
+                                    break;                      ///QUEBRA O LOOP
                                     }
                                 }
-                                if(!CobraOn){
+                                if(!CobraOn){                   ///QUANDO FOR FALSE A VARIAVEL BOOLEANA SEGUE O CODIGO
                                     switch (m[i][j]) {
                                     case 0: cout << " "; break; //caminho
                                     case 1: cout << char(219); break; //parede
@@ -342,7 +342,7 @@ int main()
                             if(CobraHorizontal==true && passouCobraMovimento >= velocidadeTecla) {
                                 MovimentoCobra(Cobra);
                                 Cobra[0].x--;
-                                CobraVertical=true;
+                                CobraVertical=true; 
                                 CobraHorizontal=false;
                                 CabecaCima = true;
                                 CabecaBaixo = CabecaDireita = CabecaEsquerda = false;
