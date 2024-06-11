@@ -51,8 +51,9 @@ bool ColisaoCobra(const vector<Snake>& Cobra) {        ///COLISAO DO CORPO
 bool ColisaoCobra(const vector<Snake>& Cobra, int m[15][17]) {
     if (m[Cobra[0].x][Cobra[0].y] == 1) {
         return true;
+    } else {
+        return false;
     }
-    return false;
 }
 
 void geraMaca(int m[15][17], bool& macaNoJogo, const vector<Snake>& Cobra) {
@@ -428,7 +429,7 @@ int main()
                         jogo = false;
                     }
 
-                    if (CobraViva.comeu == 100) {
+                    if (CobraViva.comeu == 10) {
                         jogo = false;
                     }
 
@@ -458,7 +459,7 @@ int main()
 
                     system ("cls");
                 }
-                if (CobraViva.comeu == 100) {
+                if (CobraViva.comeu == 10) {
                     system ("cls");
                     auto tempo = final - inicio;
                     int tempoEmSegundos = duration_cast<seconds>(tempo).count(); //tempo no arquivo
