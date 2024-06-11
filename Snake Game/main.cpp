@@ -35,15 +35,22 @@ bool contemApenasLetras(const std::string& str) {
 
 void MovimentoCobra(vector <Snake> &Cobra) { ///MOVIMENTO DO CORPO
     for(int i = Cobra.size()-1;i>0;i--){     ///FOR DO TAMANHO DA COBRA SE MOVIMENTO ATÉ A CABEÇA
-        Cobra[i]=Cobra[i-1];                 ///POSIÇÃO FINAL RECEBE A ANTERIOR 
+        Cobra[i]=Cobra[i-1];                 ///POSIÇÃO FINAL RECEBE A ANTERIOR
         }
 }
 
-bool ColisaoCorpoCobra(const vector<Snake>& Cobra) {        ///COLISAO DO CORPO
+bool ColisaoCobra(const vector<Snake>& Cobra) {        ///COLISAO DO CORPO
     for(int i =1;i<Cobra.size();i++){                       ///FOR DO PESCOÇO PRA FRENTE, POIS NÃO PRECISA DA CABEÇÇA
         if(Cobra[0].x==Cobra[i].x&&Cobra[0].y==Cobra[i].y){ ///VERIFICA SE A CABEÇA ESTA ENCOSTADA EM ALGUMA PARTE DO CORPO TODO
             return true;
         }
+    }
+    return false;
+}
+
+bool ColisaoCobra(const vector<Snake>& Cobra, int m[15][17]) {
+    if (m[Cobra[0].x][Cobra[0].y] == 1) {
+        return true;
     }
     return false;
 }
@@ -228,7 +235,7 @@ int main()
                 cout << "Erro: O nome deve conter apenas 4 letras." << endl;
                 cout << "digite seu nome:" << endl;
                 cin >> nome;
-            } while (!contemApenasLetras(nome));
+            }while (!contemApenasLetras(nome));
 
             system("cls");
             auto inicio = steady_clock::now();
@@ -307,9 +314,6 @@ int main()
 
                     auto agoraCobra = high_resolution_clock::now();
                     auto passouCobra = duration_cast<milliseconds>(agoraCobra - inicioCobra);
-                    if(ColisaoCorpoCobra(Cobra)){
-                            CobraViva.vivo = false;
-                        }
                     if (passouCobra >= velocidade) {
                         if (CabecaCima == true) {
                             MovimentoCobra(Cobra);
@@ -342,7 +346,7 @@ int main()
                             if(CobraHorizontal==true && passouCobraMovimento >= velocidadeTecla) {
                                 MovimentoCobra(Cobra);
                                 Cobra[0].x--;
-                                CobraVertical=true; 
+                                CobraVertical=true;
                                 CobraHorizontal=false;
                                 CabecaCima = true;
                                 CabecaBaixo = CabecaDireita = CabecaEsquerda = false;
@@ -412,9 +416,14 @@ int main()
                         CobraViva.comeu += 1; //Contador de maçãs comidas
                     }
 
-                    if (CobraViva.vivo == true && m[Cobra[0].x][Cobra[0].y] == 1) {
+                    if (ColisaoCobra(Cobra, m)) {
                         CobraViva.vivo = false;
                     }
+
+                    if(ColisaoCobra(Cobra)){
+                        CobraViva.vivo = false;
+                    }
+
                     if(!CobraViva.vivo) {
                         jogo = false;
                     }
