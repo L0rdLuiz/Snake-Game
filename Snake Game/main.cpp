@@ -10,6 +10,7 @@
 #include <ctime>
 #include <fstream>
 #include <string>
+#include <cctype>
 
 using namespace std;
 using namespace std::chrono;
@@ -20,11 +21,12 @@ struct Snake {
     int comeu;
 };
 
-bool contemApenasLetras(const string& str) {  /// verifica se o nome contém apenas letras
-    for (char c : str)
-    {
-        if (!isalpha(c))
-        {
+bool contemApenasLetras(const std::string& str) {
+    if (str.length() != 4) {
+        return false;
+    }
+    for (char c : str) {
+        if (!std::isalpha(c)) {
             return false;
         }
     }
@@ -222,11 +224,11 @@ int main()
             //Jogo
             cout << "digite seu nome: " << endl; //nome do jogador para o rank
             cin >> nome;
-            if (!contemApenasLetras(nome)) {
-                cout << "Erro: O nome deve conter apenas letras." << endl;
+            do {
+                cout << "Erro: O nome deve conter apenas 4 letras." << endl;
                 cout << "digite seu nome:" << endl;
                 cin >> nome;
-            }
+            } while (!contemApenasLetras(nome));
 
             system("cls");
             auto inicio = steady_clock::now();
