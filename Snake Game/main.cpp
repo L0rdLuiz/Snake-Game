@@ -231,11 +231,11 @@ int main()
             //Jogo
             cout << "digite seu nome: " << endl; //nome do jogador para o rank
             cin >> nome;
-            do {
+            while (!contemApenasLetras(nome)){
                 cout << "Erro: O nome deve conter apenas 4 letras." << endl;
                 cout << "digite seu nome:" << endl;
                 cin >> nome;
-            }while (!contemApenasLetras(nome));
+            };
 
             system("cls");
             auto inicio = steady_clock::now();
