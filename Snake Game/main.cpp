@@ -208,6 +208,10 @@ int main()
     //Cobra viva
     Snake CobraViva;
     milliseconds diminuirVelocidade(45);
+    //Modos Especiais
+    bool JogoComTimer = false;
+    bool JogoEspecial = false;
+    bool IAJogo = false;
 
     do {
         PlaySound(TEXT("menu.wav"), NULL, SND_ASYNC); //musica menu
@@ -224,7 +228,8 @@ int main()
         cout << "                         |         1 - COMECAR          |" << endl;
         cout << "                         |         2 - TUTORIAL         |" << endl;
         cout << "                         |         3 - RANKING          |" << endl;
-        cout << "                         |         4 - SAIR             |" << endl;
+        cout << "                         |         4 - MODOS ESPECIAIS  |" << endl;
+        cout << "                         |         5 - SAIR             |" << endl;
         cout << "                         |______________________________|" << endl;
         cin >> menu;
         switch (menu) {
@@ -479,8 +484,7 @@ int main()
         }
         case 2: //Sobre o jogo
             system ("cls");
-            cout<< "                                                                  " << endl;
-            cout<< "                                                                  " << endl;
+            cout<<endl<<endl<<endl<<endl;
             cout << "OBJETIVO: Coma 100 macas sem colidir com a parede ou com a cobra." << endl;
             cout << "MOVIMENTO: Use W, A, S e D para mover a cobra que se move sempre para frente" << endl;
             cout << "MACAS: Mova-se em direcao as macas para come-las e crescer." << endl;
@@ -496,7 +500,23 @@ int main()
             exibirRanking();
             system("pause");
             break;
-        case 4: // Obrigado por jogar
+        case 4: // Modos Especiais
+            system ("cls");
+            cout<<"Modos Especiais:"<<endl<<endl;
+            cout<<"Jogo com Tempo: Jogo normal com tempo de 3 minutos para completar"<<endl<<endl;
+            cout<<"Sim (1)"<<endl;
+            cout<<"Nao (0)"<<endl;
+            cin>>JogoComTimer;
+            cout<<endl<<endl<<"Jogo Especial: Voce comeca com 100 macas e seu objetivo e chegar ate 0"<<endl<<endl;
+            cout<<"Sim (1)"<<endl;
+            cout<<"Nao (0)"<<endl;
+            cin>>JogoEspecial;
+            cout<<endl<<endl<<"Ativar IA: IA joga o jogo por voce"<<endl<<endl;
+            cout<<"Sim (1)"<<endl;
+            cout<<"Nao (0)"<<endl;
+            cin>>IAJogo;
+            break;
+        case 5: //Obrigado por jogar
             break;
         default:
             cout << "Esta opcao nao e aceita digite outro numero"<<endl;
@@ -504,7 +524,7 @@ int main()
             break;
         }
     }
-    while (menu != 4);
+    while (menu != 5);
 
     return 0;
 } //fim main
