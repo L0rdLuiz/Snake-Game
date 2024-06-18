@@ -212,6 +212,8 @@ int main()
     bool JogoComTimer = false;
     bool JogoEspecial = false;
     bool IAJogo = false;
+    //Jogo Com Timer
+    seconds tempoLimite(180);
 
     do {
         PlaySound(TEXT("menu.wav"), NULL, SND_ASYNC); //musica menu
@@ -445,6 +447,10 @@ int main()
                         aumentoVelocidade = false;
                     }
 
+                    if (tempo >= tempoLimite && JogoComTimer == true) {
+                        jogo = false;
+                    }
+
                 }; //fim do laco do jogo
                 if(CobraViva.vivo == false){
                    PlaySound(TEXT("morreu.wav"), NULL, SND_ASYNC); //som morte cobra
@@ -464,13 +470,27 @@ int main()
 
                     system ("cls");
                 }
-                if (CobraViva.comeu == 10) {
+                if (CobraViva.comeu == 100) {
                     system ("cls");
                     auto tempo = final - inicio;
                     int tempoEmSegundos = duration_cast<seconds>(tempo).count(); //tempo no arquivo
                     salvarRanking(nome,pontuacao, tempoEmSegundos);
                     cout<<nome<<" Voce fez: "<<pontuacao<<" pontos.";
                     cout<< endl << "Voce ganhou o jogo"<<endl;
+                    cout<<"Jogo feito por:"<<endl<<"Luiz Antonio Haenisch"<<endl<<"Carlos Henrique Okarenski Ramos Depieri"<<endl<<"Isabela Silverio Cardoso Pereira"<<endl;
+                    cout<<"Professor: Alex Luciano"<<endl;
+                    cout<<"Quer jogar novamente?"<<endl;
+                    cout<<"Digite 1 para jogar de novo ou 0 retornar ao menu"<<endl;
+                    cin>>repetir;
+
+                    system ("cls");
+                }
+                if (jogo == false && JogoComTimer == true) {
+                    system ("cls");
+                    auto tempo = final - inicio;
+                    int tempoEmSegundos = duration_cast<seconds>(tempo).count(); //tempo no arquivo
+                    salvarRanking(nome,pontuacao, tempoEmSegundos);
+                    cout<<nome<<" Voce fez: "<<pontuacao<<" pontos."<<endl;
                     cout<<"Jogo feito por:"<<endl<<"Luiz Antonio Haenisch"<<endl<<"Carlos Henrique Okarenski Ramos Depieri"<<endl<<"Isabela Silverio Cardoso Pereira"<<endl;
                     cout<<"Professor: Alex Luciano"<<endl;
                     cout<<"Quer jogar novamente?"<<endl;
