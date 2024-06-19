@@ -212,6 +212,8 @@ int main()
     bool JogoComTimer = false;
     bool JogoEspecial = false;
     bool IAJogo = false;
+    //Jogo Com Timer
+    seconds tempoLimite(180);
 
     do {
         PlaySound(TEXT("menu.wav"), NULL, SND_ASYNC); //musica menu
@@ -445,6 +447,10 @@ int main()
                         aumentoVelocidade = false;
                     }
 
+                    if (tempo >= tempoLimite && JogoComTimer == true) {
+                        jogo = false;
+                    }
+
                 }; //fim do laco do jogo
                 if(CobraViva.vivo == false){
                    PlaySound(TEXT("morreu.wav"), NULL, SND_ASYNC); //som morte cobra
@@ -464,13 +470,27 @@ int main()
 
                     system ("cls");
                 }
-                if (CobraViva.comeu == 10) {
+                if (CobraViva.comeu == 100) {
                     system ("cls");
                     auto tempo = final - inicio;
                     int tempoEmSegundos = duration_cast<seconds>(tempo).count(); //tempo no arquivo
                     salvarRanking(nome,pontuacao, tempoEmSegundos);
                     cout<<nome<<" Voce fez: "<<pontuacao<<" pontos.";
                     cout<< endl << "Voce ganhou o jogo"<<endl;
+                    cout<<"Jogo feito por:"<<endl<<"Luiz Antonio Haenisch"<<endl<<"Carlos Henrique Okarenski Ramos Depieri"<<endl<<"Isabela Silverio Cardoso Pereira"<<endl;
+                    cout<<"Professor: Alex Luciano"<<endl;
+                    cout<<"Quer jogar novamente?"<<endl;
+                    cout<<"Digite 1 para jogar de novo ou 0 retornar ao menu"<<endl;
+                    cin>>repetir;
+
+                    system ("cls");
+                }
+                if (jogo == false && JogoComTimer == true) {
+                    system ("cls");
+                    auto tempo = final - inicio;
+                    int tempoEmSegundos = duration_cast<seconds>(tempo).count(); //tempo no arquivo
+                    salvarRanking(nome,pontuacao, tempoEmSegundos);
+                    cout<<nome<<" Voce fez: "<<pontuacao<<" pontos."<<endl;
                     cout<<"Jogo feito por:"<<endl<<"Luiz Antonio Haenisch"<<endl<<"Carlos Henrique Okarenski Ramos Depieri"<<endl<<"Isabela Silverio Cardoso Pereira"<<endl;
                     cout<<"Professor: Alex Luciano"<<endl;
                     cout<<"Quer jogar novamente?"<<endl;
@@ -501,31 +521,48 @@ int main()
             system("pause");
             break;
         case 4: // Modos Especiais
-            system ("cls");
-            cout<<"Modos Especiais:"<<endl<<endl;
+            system("cls");
+    cout << "Escolha entre um dos modos especiais:" << endl << endl;
+    cout << "Escolha uma opcao (1, 2, 3): " << endl << endl;
+    cout << "1 - Jogo com Tempo: O jogador possui apenas 3 minutos para completar o jogo" << endl;
+    cout << "2 - Jogo Especial: O jogador comeca com 100 macas e tem que ficar com 0" << endl;
+    cout << "3 - Ativar IA: IA joga o jogo por voce" << endl;
+    cout << "4 - sem modo especial" << endl;
+    int escolha;
+    cin >> escolha;
 
-            do{
-            cout<<"Jogo com Tempo: O jogador possui apenas 3 minutos para completar o jogo"<<endl<<endl;
-            cout<<"Sim (1)"<<endl;
-            cout<<"Nao (0)"<<endl;
-            cin>>JogoComTimer;
-            cout<<endl<<endl<<"Jogo Especial: O jogador comeca com 100 macas, com o objetivo de diminuir para 0"<<endl<<endl;
-            cout<<"Sim (1)"<<endl;
-            cout<<"Nao (0)"<<endl;
-            cin>>JogoEspecial;
-            cout<<endl<<endl<<"Ativar IA: IA joga o jogo por voce"<<endl<<endl;
-            cout<<"Sim (1)"<<endl;
-            cout<<"Nao (0)"<<endl;
-            cin>>IAJogo;
+    switch (escolha) {
+        case 1:
+            JogoComTimer = 1;
+            break;
+        case 2:
+            JogoEspecial = 1;
+            break;
+        case 3:
+            IAJogo = 1;
+            break;
+        case 4:
+            main();
+            break;
+        default:
+            cout << "Opcao invalida." << endl;
 
-            if(JogoComTimer ==1 || JogoEspecial ==1 ||IAJogo ==1){
-                system("cls");
-               cout << "Voce so pode escolher 1" << endl;
-               return 0;}
-               
-            
+            return 0;
+    }
 
-            }while();
+    system("cls");
+
+    if (JogoComTimer == 1) {
+        cout << "Voce escolheu jogar com tempo." << endl;
+    } else if (JogoEspecial == 1) {
+        cout << "Voce escolheu jogo especial." << endl;
+    } else if (IAJogo == 1) {
+        cout << "Voce escolheu IA." << endl;
+    }
+
+    system("pause");
+
+
 
 
             break;
