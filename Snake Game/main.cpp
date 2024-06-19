@@ -205,6 +205,7 @@ int main()
     int menu;
     string nome;
     int dificuldade;
+    int FaseJogo = 1;
     int m[15][17];
     int pontuacao = 0;
     int repetir = 0;
@@ -303,6 +304,7 @@ int main()
 
                 GerarMatrix(m, dificuldade);
                 while (jogo == true) {
+                
                     ///Posiciona a escrita no inicio do console
                     set_cursor();
 
@@ -392,7 +394,7 @@ int main()
                             }
                             break;
                             case 'o':
-                            IncrementoDaCobra(Cobra);
+                            CobraViva.comeu +=10;
                             break;
                         }
                     }
@@ -403,6 +405,7 @@ int main()
 
                     cout << "   TEMPO: " << duration_cast<seconds>(tempo).count() << endl;
                     cout << " PONTUACAO: " << pontuacao << endl; //pontuacao em tela
+                    cout << "   FASE:    " << FaseJogo << endl; //Fase do jogo
 
                     geraMaca(m, macaNoJogo, Cobra);
 
@@ -410,8 +413,20 @@ int main()
                         m[Cobra[0].x][Cobra[0].y] = 0;
                         IncrementoDaCobra(Cobra);
                         macaNoJogo = false;
-                        pontuacao+=10; //somando 10 à pontuacao
-                        CobraViva.comeu += 1; //Contador de maçãs comidas
+                        switch (dificuldade)
+                        {
+                        case 1:
+                            pontuacao+=20; //somando 10 à pontuacao
+                            CobraViva.comeu += 1; //Contador de maçãs comidas
+                            break;
+                        case 2:
+                            pontuacao+=10; //somando 10 à pontuacao
+                            CobraViva.comeu += 1; //Contador de maçãs comidas
+                            break;
+                        case 3:
+                            pontuacao+=5; //somando 10 à pontuacao
+                            CobraViva.comeu += 1; //Contador de maçãs comidas
+                        }
                     }
 
                     if (ColisaoCobra(Cobra, m)) {
@@ -426,8 +441,72 @@ int main()
                         jogo = false;
                     }
 
-                    if (CobraViva.comeu == 10) {
-                        jogo = false;
+                    if(dificuldade==1){
+                        switch (FaseJogo){
+                        case 1:
+                            if (CobraViva.comeu == 20) {
+                                jogo = false;
+                                FaseJogo++;
+                            }
+                            break;
+                        case 2:
+                             if (CobraViva.comeu == 50) {
+                                jogo = false;
+                                FaseJogo++;
+                            }
+                            break;
+                        case 3:
+                            if (CobraViva.comeu == 100) {
+                               jogo = false;
+                               FaseJogo++;
+                            }
+                            break;
+                        }
+                    }
+                    if(dificuldade==2){
+                        switch (FaseJogo){
+                        case 1:
+                            if (CobraViva.comeu == 40) {
+                                jogo = false;
+                                FaseJogo++;
+                            }
+                            break;
+                        case 2:
+                             if (CobraViva.comeu == 70) {
+                                jogo = false;
+                                FaseJogo++;
+                            }
+                            break;
+                        case 3:
+                            if (CobraViva.comeu == 100) {
+                               jogo = false;
+                               FaseJogo++;
+                            }
+                            break;
+                        }
+                    }
+
+                    if(dificuldade==3){
+                        switch (FaseJogo){
+                        case 1:
+                            if (CobraViva.comeu == 50) {
+                                jogo = false;
+                                FaseJogo++;
+                            }
+                            break;
+                        case 2:
+                             if (CobraViva.comeu == 100) {
+                                jogo = false;
+                                FaseJogo++;
+                            }
+                            break;
+                        case 3:
+                            if (CobraViva.comeu == 120) {
+                               jogo = false;
+                               FaseJogo++;
+                            }
+                            break;
+                        }
                     }
 
                     if (CobraViva.comeu % 5 == 0 && CobraViva.comeu != 0 && aumentoVelocidade == false) {
@@ -445,6 +524,31 @@ int main()
                 if(CobraViva.vivo == false){
                     ///musica fica aqui
                 }
+
+                if(FaseJogo>1&&FaseJogo<4){ ///Verificação pra passar de fase
+                    system("cls");
+                    cout<<"Voce passou de fase!"<<endl;
+                    repetir=1;
+                    system("pause");
+                    system("cls");
+                }
+
+                if(FaseJogo==4){
+                    system ("cls");
+                    auto tempo = final - inicio;
+                    int tempoEmSegundos = duration_cast<seconds>(tempo).count(); //tempo no arquivo
+                    salvarRanking(nome,pontuacao, tempoEmSegundos);
+                    cout<<nome<<" Voce fez: "<<pontuacao<<" pontos.";
+                    cout<< endl << "Voce ganhou o jogo"<<endl;
+                    cout<<"Jogo feito por:"<<endl<<"Luiz Antonio Haenisch"<<endl<<"Carlos Henrique Okarenski Ramos Depieri"<<endl<<"Isabela Silverio Cardoso Pereira"<<endl;
+                    cout<<"Professor: Alex Luciano"<<endl;
+                    cout<<"Quer jogar novamente?"<<endl;
+                    cout<<"Digite 1 para jogar de novo ou 0 retornar ao menu"<<endl;
+                    cin>>repetir;
+
+                    system ("cls");
+                }
+
                 if (CobraViva.vivo == false) {
                     system ("cls");
                     auto tempo = final - inicio;
