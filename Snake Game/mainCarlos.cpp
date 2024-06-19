@@ -1,9 +1,7 @@
 #include <iostream>
-#include <windows.h>
-#include <conio.h>
+#include "console.h"
 #include <vector>
 #include <chrono>
-#include <mmsystem.h> //musica
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -84,6 +82,46 @@ void IncrementoDaCobra (vector <Snake>&Cobra) { ///AUMENTA O TAMANHO DO CORPO QU
     Cobra.push_back(Cauda);                     ///VECTOR COBRA RECEBE A POSIÇÃO DO STRUCT CAUDA
 }
 
+void GerarMatrix (int m[15][17], int dificuldade){
+    for(int i=0;i<15;i++){
+        for(int j=0;j<17;j++){
+            if(i==0||i==14||j==0||j==16){
+                m[i][j]=1;
+            } else {
+                m[i][j]=0;
+            }
+        }
+    }
+}
+
+void GerarMapa(int m[15][17], vector <Snake> Cobra){
+    for (int i = 0; i < 15; i++) {
+        for (int j = 0; j < 17; j++) {
+            bool CobraOn = false;                               ///UMA VARIAVEL BOOLEANA PARA QUEBRAR A IMPRESÃO DA COBRA
+                if(i==Cobra[0].x&&j==Cobra[0].y){
+                    cout<<char (79);
+                    }else{
+                        for(auto const &Snake:Cobra){           ///LOOP PARA IMPRIMIR A COBRA NO JOGO
+                            if(i==Snake.x&&j==Snake.y){
+                                cout << char(111);              ///personagem
+                                CobraOn = true;                 ///QUANDO RECEBE TRUE ELE CONTINUA O CODIGO E VOLTA A SER FALSE NO PROXIMO CICLO
+                                break;                          ///QUEBRA O LOOP
+                            }
+                        }
+                        if(!CobraOn){                           ///QUANDO FOR FALSE A VARIAVEL BOOLEANA SEGUE O CODIGO
+                            switch (m[i][j]) {
+                            case 0: cout << " "; break;         ///caminho
+                            case 1: cout << char(219); break;   ///parede
+                            case 2: cout<<char(162); break;     ///maçã
+                                                                ///default: cout << "-"; //erro
+                            }
+                        }                                       ///fim switch
+                    }
+                }
+            cout << "\n";
+        }
+}
+
 void salvarRanking(const string& nome, int &pontuacao,  int tempoEmSegundos) {  //salva a pontuacao no arquivo
     ofstream arquivoS;
     arquivoS.open("ranking.txt", std::ios_base::app);
@@ -160,65 +198,14 @@ void exibirRanking() { ///exibi rank ordenado em tela
     }
 }
 
-void GerarMatrix (int dificuldade){
-    for(int i=0;i<15;i++){
-        for(int j=0;j<17;j++){
-            if((i==0||i==14)||(j==0||j==16)){
-                m[i][j]=1;
-            }
-        }
-    }
-}
-
-void GerarMapa(int m[15][17], vector <Snake> Cobra){
-    for (int i = 0; i < 15; i++) {
-        for (int j = 0; j < 17; j++) {
-            bool CobraOn = false;                               ///UMA VARIAVEL BOOLEANA PARA QUEBRAR A IMPRESÃO DA COBRA
-                if(i==Cobra[0].x&&j==Cobra[0].y){
-                    cout<<char (79);
-                    }else{
-                        for(auto const &Snake:Cobra){           ///LOOP PARA IMPRIMIR A COBRA NO JOGO
-                            if(i==Snake.x&&j==Snake.y){
-                                cout << char(111);              ///personagem
-                                CobraOn = true;                 ///QUANDO RECEBE TRUE ELE CONTINUA O CODIGO E VOLTA A SER FALSE NO PROXIMO CICLO
-                                break;                          ///QUEBRA O LOOP
-                            }
-                        }
-                        if(!CobraOn){                           ///QUANDO FOR FALSE A VARIAVEL BOOLEANA SEGUE O CODIGO
-                            switch (m[i][j]) {
-                            case 0: cout << " "; break;         ///caminho
-                            case 1: cout << char(219); break;   ///parede
-                            case 2: cout<<char(162); break;     ///maçã
-                                                                ///default: cout << "-"; //erro
-                            }
-                        }                                       ///fim switch
-                    }
-                }
-            cout << "\n";
-        }
-}
-
 int main()
 {
-    ///ALERTA: NAO MODIFICAR O TRECHO DE CODIGO, A SEGUIR.
-    //INICIO: COMANDOS PARA QUE O CURSOR NAO FIQUE PISCANDO NA TELA
-    HANDLE out = GetStdHandle(STD_OUTPUT_HANDLE);
-    CONSOLE_CURSOR_INFO cursorInfo;
-    GetConsoleCursorInfo(out, &cursorInfo);
-    cursorInfo.bVisible = false; // set the cursor visibility
-    SetConsoleCursorInfo(out, &cursorInfo);
-    //FIM: COMANDOS PARA QUE O CURSOR NAO FIQUE PISCANDO NA TELA
-    //INICIO: COMANDOS PARA REPOSICIONAR O CURSOR NO INICIO DA TELA
-    short int CX = 0, CY = 0;
-    COORD coord;
-    coord.X = CX;
-    coord.Y = CY;
-    //FIM: COMANDOS PARA REPOSICIONAR O CURSOR NO INICIO DA TELA
-    ///ALERTA: NAO MODIFICAR O TRECHO DE CODIGO, ACIMA.
+    hide_cursor();
 
     int menu;
     string nome;
     int dificuldade;
+    int m[15][17];
     int pontuacao = 0;
     int repetir = 0;
     int TamanhoCobra = 3;
@@ -255,9 +242,9 @@ int main()
     seconds tempoLimite(180);
 
     do {
-        PlaySound(TEXT("menu.wav"), NULL, SND_ASYNC); //musica menu
-        system("cls");
-         cout << "                           _____             _        " << endl;
+        clear_console();
+
+        cout << "                           _____             _        " << endl;
         cout << "                          /  ___|           | |       " << endl;
         cout << "                          \\ `--. _ __   __ _| | _____ " << endl;
         cout << "                           `--. \\ '_ \\ / _` | |/ / _ \\" << endl;
@@ -275,7 +262,7 @@ int main()
         cin >> menu;
         switch (menu) {
         case 1:{
-            ///Jogo
+            //Jogo
             cout<<"Selecione a dificuldade: [1] facil [2] medio [3] dificil."<<endl;
             cin>>dificuldade;
             while(dificuldade<1||dificuldade>3){
@@ -295,7 +282,6 @@ int main()
 
             do {
                 //Botar coisas para repetir aqui
-                PlaySound(TEXT("trilha.wav"), NULL, SND_ASYNC); //musica
                 bool jogo = true;
                 CobraViva.vivo = true;
                 CobraViva.comeu = 0;
@@ -315,32 +301,14 @@ int main()
                 CabecaBaixo = CabecaBaixo = CabecaCima = false;
                 pontuacao = 0;
 
-                int m[15][17] =
-                {
-                    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-                    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-                    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-                    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-                    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-                    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-                    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-                    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-                    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-                    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-                    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-                    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-                    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-                    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-                };
-
+                GerarMatrix(m, dificuldade);
                 while (jogo == true) {
                     ///Posiciona a escrita no inicio do console
-                    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+                    set_cursor();
 
                     ///Imprime o jogo: mapa e personagem.
                     GerarMapa(m,Cobra);
-                    ///fim for mapa
+                    //fim for mapa
 
                     auto agoraCobra = high_resolution_clock::now();
                     auto passouCobra = duration_cast<milliseconds>(agoraCobra - inicioCobra);
@@ -369,7 +337,7 @@ int main()
 
                     ///executa os movimentos
                     if (_kbhit()) {
-                        tecla = getch();
+                        tecla = get_input_without_enter();
                         switch (tecla) {
                         case 72:
                         case 'w': ///cima
@@ -475,7 +443,7 @@ int main()
 
                 }; //fim do laco do jogo
                 if(CobraViva.vivo == false){
-                   PlaySound(TEXT("morreu.wav"), NULL, SND_ASYNC); //som morte cobra
+                    ///musica fica aqui
                 }
                 if (CobraViva.vivo == false) {
                     system ("cls");
