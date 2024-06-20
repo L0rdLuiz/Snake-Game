@@ -304,7 +304,7 @@ int main()
 
                 GerarMatrix(m, dificuldade);
                 while (jogo == true) {
-                
+
                     ///Posiciona a escrita no inicio do console
                     set_cursor();
 
@@ -615,20 +615,47 @@ int main()
             system("pause");
             break;
         case 4: // Modos Especiais
-            system ("cls");
-            cout<<"Modos Especiais:"<<endl<<endl;
-            cout<<"Jogo com Tempo: Jogo normal com tempo de 3 minutos para completar"<<endl<<endl;
-            cout<<"Sim (1)"<<endl;
-            cout<<"Nao (0)"<<endl;
-            cin>>JogoComTimer;
-            cout<<endl<<endl<<"Jogo Especial: Voce comeca com 100 macas e seu objetivo e chegar ate 0"<<endl<<endl;
-            cout<<"Sim (1)"<<endl;
-            cout<<"Nao (0)"<<endl;
-            cin>>JogoEspecial;
-            cout<<endl<<endl<<"Ativar IA: IA joga o jogo por voce"<<endl<<endl;
-            cout<<"Sim (1)"<<endl;
-            cout<<"Nao (0)"<<endl;
-            cin>>IAJogo;
+              system("cls");
+    cout << "Escolha entre um dos modos especiais:" << endl << endl;
+    cout << "Escolha uma opcao (1, 2, 3): " << endl << endl;
+    cout << "1 - Jogo com Tempo: O jogador possui apenas 3 minutos para completar o jogo" << endl;
+    cout << "2 - Jogo Especial: O jogador comeca com 100 macas e tem que ficar com 0" << endl;
+    cout << "3 - Ativar IA: IA joga o jogo por voce" << endl;
+    cout << "4 - sem modo especial" << endl;
+    int escolha;
+    cin >> escolha;
+
+    switch (escolha) {
+        case 1:
+            JogoComTimer = 1;
+            break;
+        case 2:
+            JogoEspecial = 1;
+            break;
+        case 3:
+            IAJogo = 1;
+            break;
+        case 4:
+            main();
+            break;
+        default:
+            cout << "Opcao invalida." << endl;
+
+            return 0;
+    }
+
+    system("cls");
+
+    if (JogoComTimer == 1) {
+        cout << "Voce escolheu jogar com tempo." << endl;
+    } else if (JogoEspecial == 1) {
+        cout << "Voce escolheu jogo especial." << endl;
+    } else if (IAJogo == 1) {
+        cout << "Voce escolheu IA." << endl;
+    }
+
+    system("pause");
+
             break;
         case 5: //Obrigado por jogar
             break;
