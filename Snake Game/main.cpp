@@ -210,6 +210,7 @@ int main()
     int pontuacao = 0;
     int repetir = 0;
     int TamanhoCobra = 3;
+    int movimentos = 0;
     vector <Snake> Cobra;
     //Posicao inicial do personagem no console
     Cobra.push_back({5,5});
@@ -318,18 +319,22 @@ int main()
                         if (CabecaCima == true) {
                             MovimentoCobra(Cobra);
                             Cobra[0].x--;
+                            movimentos++;
                         }
                         if (CabecaBaixo == true) {
                             MovimentoCobra(Cobra);
                             Cobra[0].x++;
+                            movimentos++;
                         }
                         if (CabecaDireita == true) {
                             MovimentoCobra(Cobra);
                             Cobra[0].y++;
+                            movimentos++;
                         }
                         if (CabecaEsquerda == true) {
                             MovimentoCobra(Cobra);
                             Cobra[0].y--;
+                            movimentos++;
                         }
                         inicioCobra = agoraCobra;
                     }
@@ -352,7 +357,9 @@ int main()
                                 CabecaBaixo = CabecaDireita = CabecaEsquerda = false;
                                 inicioCobraMovimento = agoraCobraMovimento;
                                 inicioCobra = agoraCobraMovimento;
+
                             }
+
                             break;
                         case 80:
                         case 's': ///baixo
@@ -402,10 +409,12 @@ int main()
                     final = steady_clock::now();
                     auto tempo = final - inicio;
 
+                    ///coisas em tela
 
                     cout << "   TEMPO: " << duration_cast<seconds>(tempo).count() << endl;
                     cout << " PONTUACAO: " << pontuacao << endl; //pontuacao em tela
                     cout << "   FASE:    " << FaseJogo << endl; //Fase do jogo
+                    cout << "MOVIMENTOS: " << movimentos << endl;
 
                     geraMaca(m, macaNoJogo, Cobra);
 
