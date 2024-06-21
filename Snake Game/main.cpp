@@ -265,12 +265,16 @@ int main()
         switch (menu) {
         case 1:{
             //Jogo
-            cout<<"Selecione a dificuldade: [1] facil [2] medio [3] dificil."<<endl;
-            cin>>dificuldade;
-            while(dificuldade<1||dificuldade>3){
-               cout<<"Opcao invalida! tente novamente:"<<endl;
-               cin>>dificuldade;
-            };
+            if (JogoComTimer == false && JogoEspecial == false) {
+                cout<<"Selecione a dificuldade: [1] facil [2] medio [3] dificil."<<endl;
+                cin>>dificuldade;
+                while(dificuldade<1||dificuldade>3){
+                   cout<<"Opcao invalida! tente novamente:"<<endl;
+                   cin>>dificuldade;
+                };
+            } else {
+                dificuldade = 2;
+            }
             cout << "digite seu nome: " << endl; //nome do jogador para o rank
             cin >> nome;
             while (!contemApenasLetras(nome)){
@@ -624,48 +628,38 @@ int main()
             system("pause");
             break;
         case 4: // Modos Especiais
-              system("cls");
-    cout << "Escolha entre um dos modos especiais:" << endl << endl;
-    cout << "Escolha uma opcao (1, 2, 3): " << endl << endl;
-    cout << "1 - Jogo com Tempo: O jogador possui apenas 3 minutos para completar o jogo" << endl;
-    cout << "2 - Jogo Especial: O jogador comeca com 100 macas e tem que ficar com 0" << endl;
-    cout << "3 - Ativar IA: IA joga o jogo por voce" << endl;
-    cout << "4 - sem modo especial" << endl;
-    int escolha;
-    cin >> escolha;
-
-    switch (escolha) {
-        case 1:
-            JogoComTimer = 1;
-            break;
-        case 2:
-            JogoEspecial = 1;
-            break;
-        case 3:
-            IAJogo = 1;
-            break;
-        case 4:
-            main();
-            break;
-        default:
-            cout << "Opcao invalida." << endl;
-
-            return 0;
-    }
-
-    system("cls");
-
-    if (JogoComTimer == 1) {
-        cout << "Voce escolheu jogar com tempo." << endl;
-    } else if (JogoEspecial == 1) {
-        cout << "Voce escolheu jogo especial." << endl;
-    } else if (IAJogo == 1) {
-        cout << "Voce escolheu IA." << endl;
-    }
-
-    system("pause");
-
-            break;
+            system("cls");
+            cout << "Escolha entre um dos modos especiais:" << endl << endl;
+            cout << "Escolha uma opcao (1, 2, 3): " << endl << endl;
+            cout << "1 - Jogo com Tempo: O jogador possui apenas 3 minutos para completar o jogo" << endl;
+            cout << "2 - Jogo Especial: O jogador comeca com 100 macas e tem que ficar com 0" << endl;
+            cout << "3 - Ativar IA: IA joga o jogo por voce" << endl;
+            cout << "4 - sem modo especial" << endl;
+            int escolha;
+            cin >> escolha;
+            switch (escolha) {
+            case 1:
+                JogoComTimer = true;
+                JogoEspecial = false;
+                IAJogo = false;
+                break;
+            case 2:
+                JogoEspecial = true;
+                IAJogo = false;
+                JogoComTimer = false;
+                break;
+            case 3:
+                IAJogo = true;
+                JogoComTimer = false;
+                JogoEspecial = false;
+                break;
+            case 4:
+                break;
+            default:
+                cout << "Opcao invalida." << endl;
+                return 0;
+            }
+        break;
         case 5: //Obrigado por jogar
             break;
         default:
