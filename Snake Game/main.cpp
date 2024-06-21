@@ -476,7 +476,7 @@ int main()
                             break;
                         }
                     }
-                    if(dificuldade==2){
+                    if(dificuldade==2 || JogoComTimer == false && JogoEspecial == false){
                         switch (FaseJogo){
                         case 1:
                             if (CobraViva.comeu == 40) {
