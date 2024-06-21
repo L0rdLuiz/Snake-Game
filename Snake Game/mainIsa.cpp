@@ -1,9 +1,7 @@
 #include <iostream>
-#include <windows.h>
-#include <conio.h>
+#include "console.h"
 #include <vector>
 #include <chrono>
-#include <mmsystem.h> //musica
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -84,6 +82,46 @@ void IncrementoDaCobra (vector <Snake>&Cobra) { ///AUMENTA O TAMANHO DO CORPO QU
     Cobra.push_back(Cauda);                     ///VECTOR COBRA RECEBE A POSIÇÃO DO STRUCT CAUDA
 }
 
+void GerarMatrix (int m[15][17], int dificuldade){
+    for(int i=0;i<15;i++){
+        for(int j=0;j<17;j++){
+            if(i==0||i==14||j==0||j==16){
+                m[i][j]=1;
+            } else {
+                m[i][j]=0;
+            }
+        }
+    }
+}
+
+void GerarMapa(int m[15][17], vector <Snake> Cobra){
+    for (int i = 0; i < 15; i++) {
+        for (int j = 0; j < 17; j++) {
+            bool CobraOn = false;                               ///UMA VARIAVEL BOOLEANA PARA QUEBRAR A IMPRESÃO DA COBRA
+                if(i==Cobra[0].x&&j==Cobra[0].y){
+                    cout<<char (79);
+                    }else{
+                        for(auto const &Snake:Cobra){           ///LOOP PARA IMPRIMIR A COBRA NO JOGO
+                            if(i==Snake.x&&j==Snake.y){
+                                cout << char(111);              ///personagem
+                                CobraOn = true;                 ///QUANDO RECEBE TRUE ELE CONTINUA O CODIGO E VOLTA A SER FALSE NO PROXIMO CICLO
+                                break;                          ///QUEBRA O LOOP
+                            }
+                        }
+                        if(!CobraOn){                           ///QUANDO FOR FALSE A VARIAVEL BOOLEANA SEGUE O CODIGO
+                            switch (m[i][j]) {
+                            case 0: cout << " "; break;         ///caminho
+                            case 1: cout << char(219); break;   ///parede
+                            case 2: cout<<char(162); break;     ///maçã
+                                                                ///default: cout << "-"; //erro
+                            }
+                        }                                       ///fim switch
+                    }
+                }
+            cout << "\n";
+        }
+}
+
 void salvarRanking(const string& nome, int &pontuacao,  int tempoEmSegundos) {  //salva a pontuacao no arquivo
     ofstream arquivoS;
     arquivoS.open("ranking.txt", std::ios_base::app);
@@ -162,27 +200,17 @@ void exibirRanking() { ///exibi rank ordenado em tela
 
 int main()
 {
-    ///ALERTA: NAO MODIFICAR O TRECHO DE CODIGO, A SEGUIR.
-    //INICIO: COMANDOS PARA QUE O CURSOR NAO FIQUE PISCANDO NA TELA
-    HANDLE out = GetStdHandle(STD_OUTPUT_HANDLE);
-    CONSOLE_CURSOR_INFO cursorInfo;
-    GetConsoleCursorInfo(out, &cursorInfo);
-    cursorInfo.bVisible = false; // set the cursor visibility
-    SetConsoleCursorInfo(out, &cursorInfo);
-    //FIM: COMANDOS PARA QUE O CURSOR NAO FIQUE PISCANDO NA TELA
-    //INICIO: COMANDOS PARA REPOSICIONAR O CURSOR NO INICIO DA TELA
-    short int CX = 0, CY = 0;
-    COORD coord;
-    coord.X = CX;
-    coord.Y = CY;
-    //FIM: COMANDOS PARA REPOSICIONAR O CURSOR NO INICIO DA TELA
-    ///ALERTA: NAO MODIFICAR O TRECHO DE CODIGO, ACIMA.
+    hide_cursor();
 
     int menu;
     string nome;
+    int dificuldade;
+    int FaseJogo = 1;
+    int m[15][17];
     int pontuacao = 0;
     int repetir = 0;
     int TamanhoCobra = 3;
+    int movimentos = 0;
     vector <Snake> Cobra;
     //Posicao inicial do personagem no console
     Cobra.push_back({5,5});
@@ -216,9 +244,9 @@ int main()
     seconds tempoLimite(180);
 
     do {
-        PlaySound(TEXT("menu.wav"), NULL, SND_ASYNC); //musica menu
-        system("cls");
-         cout << "                           _____             _        " << endl;
+        clear_console();
+
+        cout << "                           _____             _        " << endl;
         cout << "                          /  ___|           | |       " << endl;
         cout << "                          \\ `--. _ __   __ _| | _____ " << endl;
         cout << "                           `--. \\ '_ \\ / _` | |/ / _ \\" << endl;
@@ -237,6 +265,12 @@ int main()
         switch (menu) {
         case 1:{
             //Jogo
+            cout<<"Selecione a dificuldade: [1] facil [2] medio [3] dificil."<<endl;
+            cin>>dificuldade;
+            while(dificuldade<1||dificuldade>3){
+               cout<<"Opcao invalida! tente novamente:"<<endl;
+               cin>>dificuldade;
+            };
             cout << "digite seu nome: " << endl; //nome do jogador para o rank
             cin >> nome;
             while (!contemApenasLetras(nome)){
@@ -250,7 +284,6 @@ int main()
 
             do {
                 //Botar coisas para repetir aqui
-                PlaySound(TEXT("trilha.wav"), NULL, SND_ASYNC); //musica
                 bool jogo = true;
                 CobraViva.vivo = true;
                 CobraViva.comeu = 0;
@@ -270,55 +303,15 @@ int main()
                 CabecaBaixo = CabecaBaixo = CabecaCima = false;
                 pontuacao = 0;
 
-                int m[15][17] =
-                {
-                    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-                    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-                    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-                    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-                    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-                    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-                    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-                    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-                    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-                    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-                    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-                    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-                    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-                    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-                };
-
+                GerarMatrix(m, dificuldade);
                 while (jogo == true) {
+
                     ///Posiciona a escrita no inicio do console
-                    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+                    set_cursor();
 
                     ///Imprime o jogo: mapa e personagem.
-                    for (int i = 0; i < 15; i++) {
-                        for (int j = 0; j < 17; j++) {
-                            bool CobraOn = false;               ///UMA VARIAVEL BOOLEANA PARA QUEBRAR A IMPRESÃO DA COBRA
-                            if(i==Cobra[0].x&&j==Cobra[0].y) {
-                                cout<<char (79);
-                            }else {
-                                for(auto const &Snake:Cobra) {  ///LOOP PARA IMPRIMIR A COBRA NO JOGO
-                                    if(i==Snake.x&&j==Snake.y){
-                                    cout << char(111); //personagem
-                                    CobraOn = true;             ///QUANDO RECEBE TRUE ELE CONTINUA O CODIGO E VOLTA A SER FALSE NO PROXIMO CICLO
-                                    break;                      ///QUEBRA O LOOP
-                                    }
-                                }
-                                if(!CobraOn){                   ///QUANDO FOR FALSE A VARIAVEL BOOLEANA SEGUE O CODIGO
-                                    switch (m[i][j]) {
-                                    case 0: cout << " "; break; //caminho
-                                    case 1: cout << char(219); break; //parede
-                                    case 2: cout<<char(162); break; //maçã
-                                    //default: cout << "-"; //erro
-                                    }
-                                } //fim switch
-                            }
-                        }
-                        cout << "\n";
-                    } //fim for mapa
+                    GerarMapa(m,Cobra);
+                    //fim for mapa
 
                     auto agoraCobra = high_resolution_clock::now();
                     auto passouCobra = duration_cast<milliseconds>(agoraCobra - inicioCobra);
@@ -326,18 +319,22 @@ int main()
                         if (CabecaCima == true) {
                             MovimentoCobra(Cobra);
                             Cobra[0].x--;
+                            movimentos++;
                         }
                         if (CabecaBaixo == true) {
                             MovimentoCobra(Cobra);
                             Cobra[0].x++;
+                            movimentos++;
                         }
                         if (CabecaDireita == true) {
                             MovimentoCobra(Cobra);
                             Cobra[0].y++;
+                            movimentos++;
                         }
                         if (CabecaEsquerda == true) {
                             MovimentoCobra(Cobra);
                             Cobra[0].y--;
+                            movimentos++;
                         }
                         inicioCobra = agoraCobra;
                     }
@@ -347,7 +344,7 @@ int main()
 
                     ///executa os movimentos
                     if (_kbhit()) {
-                        tecla = getch();
+                        tecla = get_input_without_enter();
                         switch (tecla) {
                         case 72:
                         case 'w': ///cima
@@ -360,7 +357,9 @@ int main()
                                 CabecaBaixo = CabecaDireita = CabecaEsquerda = false;
                                 inicioCobraMovimento = agoraCobraMovimento;
                                 inicioCobra = agoraCobraMovimento;
+
                             }
+
                             break;
                         case 80:
                         case 's': ///baixo
@@ -402,7 +401,7 @@ int main()
                             }
                             break;
                             case 'o':
-                            IncrementoDaCobra(Cobra);
+                            CobraViva.comeu +=10;
                             break;
                         }
                     }
@@ -410,9 +409,12 @@ int main()
                     final = steady_clock::now();
                     auto tempo = final - inicio;
 
+                    ///coisas em tela
 
                     cout << "   TEMPO: " << duration_cast<seconds>(tempo).count() << endl;
                     cout << " PONTUACAO: " << pontuacao << endl; //pontuacao em tela
+                    cout << "   FASE:    " << FaseJogo << endl; //Fase do jogo
+                    cout << "MOVIMENTOS: " << movimentos << endl;
 
                     geraMaca(m, macaNoJogo, Cobra);
 
@@ -420,8 +422,20 @@ int main()
                         m[Cobra[0].x][Cobra[0].y] = 0;
                         IncrementoDaCobra(Cobra);
                         macaNoJogo = false;
-                        pontuacao+=10; //somando 10 à pontuacao
-                        CobraViva.comeu += 1; //Contador de maçãs comidas
+                        switch (dificuldade)
+                        {
+                        case 1:
+                            pontuacao+=20; //somando 10 à pontuacao
+                            CobraViva.comeu += 1; //Contador de maçãs comidas
+                            break;
+                        case 2:
+                            pontuacao+=10; //somando 10 à pontuacao
+                            CobraViva.comeu += 1; //Contador de maçãs comidas
+                            break;
+                        case 3:
+                            pontuacao+=5; //somando 10 à pontuacao
+                            CobraViva.comeu += 1; //Contador de maçãs comidas
+                        }
                     }
 
                     if (ColisaoCobra(Cobra, m)) {
@@ -436,8 +450,72 @@ int main()
                         jogo = false;
                     }
 
-                    if (CobraViva.comeu == 10) {
-                        jogo = false;
+                    if(dificuldade==1){
+                        switch (FaseJogo){
+                        case 1:
+                            if (CobraViva.comeu == 20) {
+                                jogo = false;
+                                FaseJogo++;
+                            }
+                            break;
+                        case 2:
+                             if (CobraViva.comeu == 50) {
+                                jogo = false;
+                                FaseJogo++;
+                            }
+                            break;
+                        case 3:
+                            if (CobraViva.comeu == 100) {
+                               jogo = false;
+                               FaseJogo++;
+                            }
+                            break;
+                        }
+                    }
+                    if(dificuldade==2){
+                        switch (FaseJogo){
+                        case 1:
+                            if (CobraViva.comeu == 40) {
+                                jogo = false;
+                                FaseJogo++;
+                            }
+                            break;
+                        case 2:
+                             if (CobraViva.comeu == 70) {
+                                jogo = false;
+                                FaseJogo++;
+                            }
+                            break;
+                        case 3:
+                            if (CobraViva.comeu == 100) {
+                               jogo = false;
+                               FaseJogo++;
+                            }
+                            break;
+                        }
+                    }
+
+                    if(dificuldade==3){
+                        switch (FaseJogo){
+                        case 1:
+                            if (CobraViva.comeu == 50) {
+                                jogo = false;
+                                FaseJogo++;
+                            }
+                            break;
+                        case 2:
+                             if (CobraViva.comeu == 100) {
+                                jogo = false;
+                                FaseJogo++;
+                            }
+                            break;
+                        case 3:
+                            if (CobraViva.comeu == 120) {
+                               jogo = false;
+                               FaseJogo++;
+                            }
+                            break;
+                        }
                     }
 
                     if (CobraViva.comeu % 5 == 0 && CobraViva.comeu != 0 && aumentoVelocidade == false) {
@@ -453,8 +531,33 @@ int main()
 
                 }; //fim do laco do jogo
                 if(CobraViva.vivo == false){
-                   PlaySound(TEXT("morreu.wav"), NULL, SND_ASYNC); //som morte cobra
+                    ///musica fica aqui
                 }
+
+                if(FaseJogo>1&&FaseJogo<4){ ///Verificação pra passar de fase
+                    system("cls");
+                    cout<<"Voce passou de fase!"<<endl;
+                    repetir=1;
+                    system("pause");
+                    system("cls");
+                }
+
+                if(FaseJogo==4){
+                    system ("cls");
+                    auto tempo = final - inicio;
+                    int tempoEmSegundos = duration_cast<seconds>(tempo).count(); //tempo no arquivo
+                    salvarRanking(nome,pontuacao, tempoEmSegundos);
+                    cout<<nome<<" Voce fez: "<<pontuacao<<" pontos.";
+                    cout<< endl << "Voce ganhou o jogo"<<endl;
+                    cout<<"Jogo feito por:"<<endl<<"Luiz Antonio Haenisch"<<endl<<"Carlos Henrique Okarenski Ramos Depieri"<<endl<<"Isabela Silverio Cardoso Pereira"<<endl;
+                    cout<<"Professor: Alex Luciano"<<endl;
+                    cout<<"Quer jogar novamente?"<<endl;
+                    cout<<"Digite 1 para jogar de novo ou 0 retornar ao menu"<<endl;
+                    cin>>repetir;
+
+                    system ("cls");
+                }
+
                 if (CobraViva.vivo == false) {
                     system ("cls");
                     auto tempo = final - inicio;
@@ -521,7 +624,7 @@ int main()
             system("pause");
             break;
         case 4: // Modos Especiais
-            system("cls");
+              system("cls");
     cout << "Escolha entre um dos modos especiais:" << endl << endl;
     cout << "Escolha uma opcao (1, 2, 3): " << endl << endl;
     cout << "1 - Jogo com Tempo: O jogador possui apenas 3 minutos para completar o jogo" << endl;
@@ -561,9 +664,6 @@ int main()
     }
 
     system("pause");
-
-
-
 
             break;
         case 5: //Obrigado por jogar
