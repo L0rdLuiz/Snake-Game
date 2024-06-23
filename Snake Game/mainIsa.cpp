@@ -122,7 +122,7 @@ void GerarMapa(int m[15][17], vector <Snake> Cobra){
         }
 }
 
-void salvarRanking(const string& nome, int &pontuacao,  int tempoEmSegundos, int dificuldade) {  //salva a pontuacao no arquivo
+void salvarRanking(const string& nome, int &pontuacao,  int tempoEmSegundos, int dificuldade, int movimentos) {  //salva a pontuacao no arquivo
     ofstream arquivoS;
     arquivoS.open("ranking.txt", std::ios_base::app);
     if (arquivoS.is_open()){
@@ -132,6 +132,7 @@ void salvarRanking(const string& nome, int &pontuacao,  int tempoEmSegundos, int
         arquivoS << "Nome: " << nome <<  endl;
         arquivoS << "Pontuacao: " << pontuacao <<  endl;
         arquivoS << "Tempo de Jogo: " << tempoEmSegundos << " segundos" << endl;
+        arquivoS << "Movimentos:" << movimentos << endl;
         if(dificuldade==1){
             arquivoS << "Dificuldade: " << "Facil" << endl;
         }else if(dificuldade==2){
@@ -618,7 +619,7 @@ int main()
                     system ("cls");
                     auto tempo = final - inicio;
                     int tempoEmSegundos = duration_cast<seconds>(tempo).count(); //tempo no arquivo
-                    salvarRanking(nome,pontuacao, tempoEmSegundos,dificuldade);
+                    salvarRanking(nome,pontuacao, tempoEmSegundos,dificuldade,movimentos);
                     cout<<nome<<" Voce fez: "<<pontuacao<<" pontos.";
                     cout<< endl << "Voce ganhou o jogo"<<endl;
                     cout<<"Jogo feito por:"<<endl<<"Luiz Antonio Haenisch"<<endl<<"Carlos Henrique Okarenski Ramos Depieri"<<endl<<"Isabela Silverio Cardoso Pereira"<<endl;
@@ -636,7 +637,7 @@ int main()
                     system ("cls");
                     auto tempo = final - inicio;
                     int tempoEmSegundos = duration_cast<seconds>(tempo).count(); //tempo no arquivo
-                    salvarRanking(nome,pontuacao, tempoEmSegundos,dificuldade);
+                    salvarRanking(nome,pontuacao, tempoEmSegundos,dificuldade,movimentos);
                     cout<<nome<<" Voce fez: "<<pontuacao<<" pontos.";
                     cout<< endl << "Voce perdeu o jogo"<<endl;
                     cout<<"Jogo feito por:"<<endl<<"Luiz Antonio Haenisch"<<endl<<"Carlos Henrique Okarenski Ramos Depieri"<<endl<<"Isabela Silverio Cardoso Pereira"<<endl;
@@ -668,7 +669,7 @@ int main()
                     system ("cls");
                     auto tempo = final - inicio;
                     int tempoEmSegundos = duration_cast<seconds>(tempo).count(); //tempo no arquivo
-                    salvarRanking(nome,pontuacao, tempoEmSegundos,dificuldade);
+                    salvarRanking(nome,pontuacao, tempoEmSegundos,dificuldade,movimentos);
                     cout<<nome<<" Voce fez: "<<pontuacao<<" pontos.";
                     cout<< endl << "Voce ganhou o jogo"<<endl;
                     cout<<"Jogo feito por:"<<endl<<"Luiz Antonio Haenisch"<<endl<<"Carlos Henrique Okarenski Ramos Depieri"<<endl<<"Isabela Silverio Cardoso Pereira"<<endl;
