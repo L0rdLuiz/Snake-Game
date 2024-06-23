@@ -515,11 +515,7 @@ int main()
                         }
                     }
 
-                    if (ColisaoCobra(Cobra, m)) {
-                        CobraViva.vivo = false;
-                    }
-
-                    if(ColisaoCobra(Cobra)){
+                    if (ColisaoCobra(Cobra, m) || ColisaoCobra(Cobra)) {
                         CobraViva.vivo = false;
                     }
 
