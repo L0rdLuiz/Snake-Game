@@ -148,7 +148,7 @@ void salvarRanking(const string& nome, int &pontuacao,  int tempoEmSegundos, int
 }
 
 
-void salvarRankingDesafio(const string& nome, int &pontuacao,  int tempoEmSegundos){
+void salvarRankingDesafio(const string& nome, int &pontuacao,  int tempoEmSegundos,int movimentos, int &escolha){
 
    ofstream arquivoS;
     arquivoS.open("rankingDesafio.txt", std::ios_base::app);
@@ -159,8 +159,13 @@ void salvarRankingDesafio(const string& nome, int &pontuacao,  int tempoEmSegund
         arquivoS << "Nome: " << nome <<  endl;
         arquivoS << "Pontuacao: " << pontuacao <<  endl;
         arquivoS << "Tempo de Jogo: " << tempoEmSegundos << " segundos" << endl;
-        arquivoS << "Data: " << dataFormatada << endl << endl;
-        arquivoS << "MODO DESAFIO: " << endl;
+        arquivoS << "Data: " << dataFormatada << endl;
+        arquivoS << "Movimentos:" << movimentos << endl;
+        if(escolha==1){
+            arquivoS << "MODO: jogo com tempo." << endl;
+        }else if(escolha==2){
+            arquivoS << "MODO: jogo especial." << endl;
+        }
 
         arquivoS << endl;
         arquivoS.close();}
@@ -338,9 +343,9 @@ int main()
                 while(dificuldade<1||dificuldade>3){
                    cout<<"Opcao invalida! tente novamente:"<<endl;
                    cin>>dificuldade;
-                };
-            }else{
-            dificuldade=2;
+                }
+            } else if(JogoComTimer == true || JogoEspecial==true){
+
             }
             cout << "digite seu nome: " << endl; //nome do jogador para o rank
             cin >> nome;
@@ -603,6 +608,11 @@ int main()
                     }
 
                 }; //fim do laco do jogo
+
+                if(JogoComTimer==true || JogoEspecial==true){
+                    salvarRankingDesafio(nome,pontuacao,tempoEmSegundos,movimentos,escolha);
+                }
+
                 if(CobraViva.vivo == false){
                     ///musica fica aqui
                 }
@@ -650,7 +660,7 @@ int main()
                 }
                 else if (CobraViva.vivo == false) {  ///ranking modo desafio
                         if(escolha==1 || escolha ==2 || escolha ==3){
-                            salvarRankingDesafio(nome,pontuacao,tempoEmSegundos);
+                            salvarRankingDesafio(nome,pontuacao,tempoEmSegundos,movimentos,escolha);
                             system ("cls");
                     auto tempo = final - inicio;
                     int tempoEmSegundos = duration_cast<seconds>(tempo).count(); //tempo no arquivo
