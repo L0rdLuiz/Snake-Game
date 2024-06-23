@@ -122,7 +122,7 @@ void GerarMapa(int m[15][17], vector <Snake> Cobra){
         }
 }
 
-void salvarRanking(const string& nome, int &pontuacao,  int tempoEmSegundos) {  //salva a pontuacao no arquivo
+void salvarRanking(const string& nome, int &pontuacao,  int tempoEmSegundos, int dificuldade, int movimentos) {  //salva a pontuacao no arquivo
     ofstream arquivoS;
     arquivoS.open("ranking.txt", std::ios_base::app);
     if (arquivoS.is_open()){
@@ -132,10 +132,43 @@ void salvarRanking(const string& nome, int &pontuacao,  int tempoEmSegundos) {  
         arquivoS << "Nome: " << nome <<  endl;
         arquivoS << "Pontuacao: " << pontuacao <<  endl;
         arquivoS << "Tempo de Jogo: " << tempoEmSegundos << " segundos" << endl;
+        arquivoS << "Movimentos:" << movimentos << endl;
+        if(dificuldade==1){
+            arquivoS << "Dificuldade: " << "Facil" << endl;
+        }else if(dificuldade==2){
+            arquivoS << "Dificuldade: " << "Medio" << endl;
+        }else if(dificuldade==3){
+            arquivoS << "Dificuldade: " << "Dificil"<< endl;
+        }
         arquivoS << "Data: " << dataFormatada << endl << endl;
         arquivoS << endl;
         arquivoS.close();}
 
+
+}
+
+
+void salvarRankingDesafio(const string& nome, int &pontuacao,  int tempoEmSegundos,int movimentos, int &escolha){
+
+   ofstream arquivoS;
+    arquivoS.open("rankingDesafio.txt", std::ios_base::app);
+    if (arquivoS.is_open()){
+        time_t tempoAtual = time(nullptr); // tempo atual em segundos
+        char dataFormatada[80];
+        strftime(dataFormatada, sizeof(dataFormatada), "%d/%m/%Y %H:%M:%S", localtime(&tempoAtual));
+        arquivoS << "Nome: " << nome <<  endl;
+        arquivoS << "Pontuacao: " << pontuacao <<  endl;
+        arquivoS << "Tempo de Jogo: " << tempoEmSegundos << " segundos" << endl;
+        arquivoS << "Data: " << dataFormatada << endl;
+        arquivoS << "Movimentos:" << movimentos << endl;
+        if(escolha==1){
+            arquivoS << "MODO: jogo com tempo." << endl;
+        }else if(escolha==2){
+            arquivoS << "MODO: jogo especial." << endl;
+        }
+
+        arquivoS << endl;
+        arquivoS.close();}
 
 }
 
@@ -198,11 +231,50 @@ void exibirRanking() { ///exibi rank ordenado em tela
     }
 }
 
+void exibirRankingDesafio(){
+    ifstream arquivoS;
+    string linha;
+    vector<pair<int, string>> ranking;
+    arquivoS.open("rankingDesafio.txt");
+    if (arquivoS.is_open())
+    {
+        int pontos;
+        string nome;
+        int escolha;
+        while (arquivoS >> linha)
+        {
+            if (linha == "Pontuacao:")
+            {
+                arquivoS >> pontos;
+                ranking.push_back(make_pair(pontos, nome));
+            }
+            else if (linha == "Nome:")
+            {
+                arquivoS >> nome;
+            }
+        }
+        arquivoS.close();
+
+        exibirRankingRecursivo(ranking, 0, ranking.size() - 1);
+
+        cout << "Ranking:" << endl;
+        for (const auto& pair : ranking)
+        {
+            cout << pair.second << " - " << pair.first << endl;
+        }
+    }
+    else
+    {
+        cout << "Erro ao abrir o arquivo de ranking." << endl;
+    }
+}
+
 int main()
 {
     hide_cursor();
 
     int menu;
+    int escolha;
     string nome;
     int dificuldade;
     int FaseJogo = 1;
@@ -271,9 +343,9 @@ int main()
                 while(dificuldade<1||dificuldade>3){
                    cout<<"Opcao invalida! tente novamente:"<<endl;
                    cin>>dificuldade;
-                };
-            } else {
-                dificuldade = 2;
+                }
+            } else if(JogoComTimer == true || JogoEspecial==true){
+
             }
             cout << "digite seu nome: " << endl; //nome do jogador para o rank
             cin >> nome;
@@ -299,6 +371,7 @@ int main()
                 auto inicioCobra = high_resolution_clock::now();
                 auto inicioCobraMovimento = high_resolution_clock::now(); //Bloqueio de tecla
                 CobraHorizontal = true;
+
                 Cobra.clear();
                 Cobra.push_back({5,5});
                 Cobra.push_back({5,4});
@@ -309,6 +382,7 @@ int main()
 
                 GerarMatrix(m, dificuldade);
                 while (jogo == true) {
+
 
                     ///Posiciona a escrita no inicio do console
                     set_cursor();
@@ -534,6 +608,11 @@ int main()
                     }
 
                 }; //fim do laco do jogo
+
+                if(JogoComTimer==true || JogoEspecial==true){
+                    salvarRankingDesafio(nome,pontuacao,tempoEmSegundos,movimentos,escolha);
+                }
+
                 if(CobraViva.vivo == false){
                     ///musica fica aqui
                 }
@@ -550,7 +629,7 @@ int main()
                     system ("cls");
                     auto tempo = final - inicio;
                     int tempoEmSegundos = duration_cast<seconds>(tempo).count(); //tempo no arquivo
-                    salvarRanking(nome,pontuacao, tempoEmSegundos);
+                    salvarRanking(nome,pontuacao, tempoEmSegundos,dificuldade,movimentos);
                     cout<<nome<<" Voce fez: "<<pontuacao<<" pontos.";
                     cout<< endl << "Voce ganhou o jogo"<<endl;
                     cout<<"Jogo feito por:"<<endl<<"Luiz Antonio Haenisch"<<endl<<"Carlos Henrique Okarenski Ramos Depieri"<<endl<<"Isabela Silverio Cardoso Pereira"<<endl;
@@ -562,11 +641,13 @@ int main()
                     system ("cls");
                 }
 
+
+
                 if (CobraViva.vivo == false) {
                     system ("cls");
                     auto tempo = final - inicio;
                     int tempoEmSegundos = duration_cast<seconds>(tempo).count(); //tempo no arquivo
-                    salvarRanking(nome,pontuacao, tempoEmSegundos);
+                    salvarRanking(nome,pontuacao, tempoEmSegundos,dificuldade,movimentos);
                     cout<<nome<<" Voce fez: "<<pontuacao<<" pontos.";
                     cout<< endl << "Voce perdeu o jogo"<<endl;
                     cout<<"Jogo feito por:"<<endl<<"Luiz Antonio Haenisch"<<endl<<"Carlos Henrique Okarenski Ramos Depieri"<<endl<<"Isabela Silverio Cardoso Pereira"<<endl;
@@ -577,11 +658,28 @@ int main()
 
                     system ("cls");
                 }
+                else if (CobraViva.vivo == false) {  ///ranking modo desafio
+                        if(escolha==1 || escolha ==2 || escolha ==3){
+                            salvarRankingDesafio(nome,pontuacao,tempoEmSegundos,movimentos,escolha);
+                            system ("cls");
+                    auto tempo = final - inicio;
+                    int tempoEmSegundos = duration_cast<seconds>(tempo).count(); //tempo no arquivo
+                    cout<<nome<<" Voce fez: "<<pontuacao<<" pontos.";
+                    cout<< endl << "Voce perdeu o jogo"<<endl;
+                    cout<<"Jogo feito por:"<<endl<<"Luiz Antonio Haenisch"<<endl<<"Carlos Henrique Okarenski Ramos Depieri"<<endl<<"Isabela Silverio Cardoso Pereira"<<endl;
+                    cout<<"Professor: Alex Luciano"<<endl;
+                    cout<<"Quer jogar novamente?"<<endl;
+                    cout<<"Digite 1 para jogar de novo ou 0 retornar ao menu"<<endl;
+                    cin>>repetir;
+
+                        }
+
+                }
                 if (CobraViva.comeu == 100) {
                     system ("cls");
                     auto tempo = final - inicio;
                     int tempoEmSegundos = duration_cast<seconds>(tempo).count(); //tempo no arquivo
-                    salvarRanking(nome,pontuacao, tempoEmSegundos);
+                    salvarRanking(nome,pontuacao, tempoEmSegundos,dificuldade,movimentos);
                     cout<<nome<<" Voce fez: "<<pontuacao<<" pontos.";
                     cout<< endl << "Voce ganhou o jogo"<<endl;
                     cout<<"Jogo feito por:"<<endl<<"Luiz Antonio Haenisch"<<endl<<"Carlos Henrique Okarenski Ramos Depieri"<<endl<<"Isabela Silverio Cardoso Pereira"<<endl;
@@ -592,20 +690,7 @@ int main()
 
                     system ("cls");
                 }
-                if (jogo == false && JogoComTimer == true) {
-                    system ("cls");
-                    auto tempo = final - inicio;
-                    int tempoEmSegundos = duration_cast<seconds>(tempo).count(); //tempo no arquivo
-                    salvarRanking(nome,pontuacao, tempoEmSegundos);
-                    cout<<nome<<" Voce fez: "<<pontuacao<<" pontos."<<endl;
-                    cout<<"Jogo feito por:"<<endl<<"Luiz Antonio Haenisch"<<endl<<"Carlos Henrique Okarenski Ramos Depieri"<<endl<<"Isabela Silverio Cardoso Pereira"<<endl;
-                    cout<<"Professor: Alex Luciano"<<endl;
-                    cout<<"Quer jogar novamente?"<<endl;
-                    cout<<"Digite 1 para jogar de novo ou 0 retornar ao menu"<<endl;
-                    cin>>repetir;
 
-                    system ("cls");
-                }
             } while (repetir == 1);
             break;
         }
@@ -616,17 +701,50 @@ int main()
             cout << "MOVIMENTO: Use W, A, S e D para mover a cobra que se move sempre para frente" << endl;
             cout << "MACAS: Mova-se em direcao as macas para come-las e crescer." << endl;
             cout << "EVITAR COLISOES: Evite colidir com a parede ou com o corpo da cobra." << endl;
-            cout << "PONTUACAO: A cada maca coletada o jogador recebe 10 pontos." << endl;
+            cout << "PONTUACAO POR DIFICULDADE" << endl;
+            cout << "FACIL:" <<endl;
+            cout << "Na fase 1 a cada maca coletada o jogador recebe 20 pontos." << endl;
+            cout << "Na fase 2 a cada maca coletada o jogador recebe 50 pontos." << endl;
+            cout << "Na fase 3 a cada maca coletada o jogador recebe 100 pontos." << endl;
+            cout << "MEDIO: " << endl;
+            cout << "Na fase 1 a cada maca coletada o jogador recebe 40 pontos." << endl;
+            cout << "Na fase 1 a cada maca coletada o jogador recebe 70 pontos." << endl;
+            cout << "Na fase 1 a cada maca coletada o jogador recebe 100 pontos." << endl;
+            cout << "DIFICIL:" << endl;
+            cout << "Na fase 1 a cada maca coletada o jogador recebe 50 pontos." << endl;
+            cout << "Na fase 1 a cada maca coletada o jogador recebe 100 pontos." << endl;
+            cout << "Na fase 1 a cada maca coletada o jogador recebe 120 pontos." << endl;
+            cout << "MODO DESAFIO: " << endl;
+            cout << "Desbloqueie seu potencial no modo desafio e divirta-se!" << endl;
+
+
+
             cout << "VITORIA: Ao comer 100 macas sem colisoes, voce vence o jogo!" << endl<< endl;
+
             cout << "BOA SORTE!" << endl << endl;
             system("pause");
             system ("cls");
             break;
         case 3: //Rank
             system("cls");
-            exibirRanking();
-            system("pause");
-            break;
+            cout << "1-Rank" << endl;
+            cout << "2- Rank modo desafio" << endl;
+            int escolhaRank;
+            cin >> escolhaRank;
+            if(escolhaRank==1){
+                exibirRanking();
+                system("pause");
+                main();
+
+
+
+            }else if(escolhaRank==2){
+                 exibirRankingDesafio();
+                 system("pause");
+                 main();
+
+            }
+
         case 4: // Modos Especiais
             system("cls");
             cout << "Escolha entre um dos modos especiais:" << endl << endl;
@@ -635,7 +753,6 @@ int main()
             cout << "2 - Jogo Especial: O jogador comeca com 100 macas e tem que ficar com 0" << endl;
             cout << "3 - Ativar IA: IA joga o jogo por voce" << endl;
             cout << "4 - sem modo especial" << endl;
-            int escolha;
             cin >> escolha;
             switch (escolha) {
             case 1:
