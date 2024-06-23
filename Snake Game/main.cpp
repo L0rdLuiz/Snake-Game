@@ -371,6 +371,7 @@ int main()
                 auto inicioCobra = high_resolution_clock::now();
                 auto inicioCobraMovimento = high_resolution_clock::now(); //Bloqueio de tecla
                 CobraHorizontal = true;
+                movimentos = 0;
 
                 Cobra.clear();
                 Cobra.push_back({5,5});
