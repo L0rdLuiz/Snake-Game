@@ -358,7 +358,13 @@ int main()
 
             do {
                 //Botar coisas para repetir aqui
-                bool jogo = true;
+                Cobra.clear();
+                Cobra.push_back({5,5});
+                Cobra.push_back({5,4});
+                Cobra.push_back({5,3});
+                CabecaDireita= true;
+                CobraHorizontal = true;
+                CabecaBaixo = CabecaEsquerda = CabecaCima = false;
                 CobraViva.vivo = true;
                 CobraViva.comeu = 0;
                 bool macaNoJogo = false;
@@ -368,28 +374,17 @@ int main()
                 milliseconds velocidadeTecla(500);
                 auto inicioCobra = high_resolution_clock::now();
                 auto inicioCobraMovimento = high_resolution_clock::now(); //Bloqueio de tecla
-                CobraHorizontal = true;
                 movimentos = 0;
-
-                Cobra.clear();
-                Cobra.push_back({5,5});
-                Cobra.push_back({5,4});
-                Cobra.push_back({5,3});
-                CabecaDireita= true;
-                CabecaBaixo = CabecaBaixo = CabecaCima = false;
                 pontuacao = 0;
+                bool jogo = true;
 
                 GerarMatrix(m, dificuldade);
                 while (jogo == true) {
-
-
                     ///Posiciona a escrita no inicio do console
                     set_cursor();
-
                     ///Imprime o jogo: mapa e personagem.
                     GerarMapa(m,Cobra);
                     //fim for mapa
-
                     auto agoraCobra = high_resolution_clock::now();
                     auto passouCobra = duration_cast<milliseconds>(agoraCobra - inicioCobra);
                     if (passouCobra >= velocidade) {
