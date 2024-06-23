@@ -344,8 +344,6 @@ int main()
                    cout<<"Opcao invalida! tente novamente:"<<endl;
                    cin>>dificuldade;
                 }
-            } else if(JogoComTimer == true || JogoEspecial==true){
-
             }
             cout << "digite seu nome: " << endl; //nome do jogador para o rank
             cin >> nome;
@@ -515,6 +513,11 @@ int main()
                             pontuacao+=5; //somando 10 à pontuacao
                             CobraViva.comeu += 1; //Contador de maçãs comidas
                         }
+
+                        if (JogoComTimer == true || JogoEspecial == true) {
+                            pontuacao+=10;
+                            CobraViva.comeu += 1; //Contador de maçãs comidas
+                        }
                     }
 
                     if (ColisaoCobra(Cobra, m)) {
@@ -605,6 +608,7 @@ int main()
                     }
 
                     if (tempo >= tempoLimite && JogoComTimer == true) {
+                        CobraViva.vivo = false;
                         jogo = false;
                     }
 
@@ -618,7 +622,7 @@ int main()
                     ///musica fica aqui
                 }
 
-                if(FaseJogo>1&&FaseJogo<4){ ///Verificação pra passar de fase
+                if(FaseJogo>1 && FaseJogo<4){ ///Verificação pra passar de fase
                     system("cls");
                     cout<<"Voce passou de fase!"<<endl;
                     repetir=1;
@@ -642,9 +646,7 @@ int main()
                     system ("cls");
                 }
 
-
-
-                if (CobraViva.vivo == false) {
+                if (CobraViva.vivo == false && JogoComTimer == false && JogoEspecial == false) {
                     system ("cls");
                     auto tempo = final - inicio;
                     int tempoEmSegundos = duration_cast<seconds>(tempo).count(); //tempo no arquivo
@@ -659,23 +661,24 @@ int main()
 
                     system ("cls");
                 }
-                else if (CobraViva.vivo == false) {  ///ranking modo desafio
-                        if(escolha==1 || escolha ==2 || escolha ==3){
-                            salvarRankingDesafio(nome,pontuacao,tempoEmSegundos,movimentos,escolha);
-                            system ("cls");
-                    auto tempo = final - inicio;
-                    int tempoEmSegundos = duration_cast<seconds>(tempo).count(); //tempo no arquivo
-                    cout<<nome<<" Voce fez: "<<pontuacao<<" pontos.";
-                    cout<< endl << "Voce perdeu o jogo"<<endl;
-                    cout<<"Jogo feito por:"<<endl<<"Luiz Antonio Haenisch"<<endl<<"Carlos Henrique Okarenski Ramos Depieri"<<endl<<"Isabela Silverio Cardoso Pereira"<<endl;
-                    cout<<"Professor: Alex Luciano"<<endl;
-                    cout<<"Quer jogar novamente?"<<endl;
-                    cout<<"Digite 1 para jogar de novo ou 0 retornar ao menu"<<endl;
-                    cin>>repetir;
 
-                        }
-
+                if (CobraViva.vivo == false && JogoComTimer == true || CobraViva.vivo == false && JogoEspecial == true) {  ///ranking modo desafio
+                    if(escolha==1 || escolha ==2 || escolha ==3){
+                        salvarRankingDesafio(nome,pontuacao,tempoEmSegundos,movimentos,escolha);
+                        system ("cls");
+                        auto tempo = final - inicio;
+                        int tempoEmSegundos = duration_cast<seconds>(tempo).count(); //tempo no arquivo
+                        cout<<nome<<" Voce fez: "<<pontuacao<<" pontos.";
+                        cout<< endl << "Voce perdeu o jogo"<<endl;
+                        cout<<"Jogo feito por:"<<endl<<"Luiz Antonio Haenisch"<<endl<<"Carlos Henrique Okarenski Ramos Depieri"<<endl<<"Isabela Silverio Cardoso Pereira"<<endl;
+                        cout<<"Professor: Alex Luciano"<<endl;
+                        cout<<"Quer jogar novamente?"<<endl;
+                        cout<<"Digite 1 para jogar de novo ou 0 retornar ao menu"<<endl;
+                        cin>>repetir;
+                        system ("cls");
+                    }
                 }
+
                 if (CobraViva.comeu == 100) {
                     system ("cls");
                     auto tempo = final - inicio;
