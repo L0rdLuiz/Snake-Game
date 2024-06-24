@@ -338,11 +338,9 @@ int main()
     bool IAJogo = false;
     //Jogo Com Timer
     seconds tempoLimite(180);
-    //Especial no mapa
-    bool especialColocado = false;
     //Especial ativo
     milliseconds intervaloEspecial(5000);
-
+    auto inicioEspecial = high_resolution_clock::now();
 
     do {
         clear_console();
@@ -409,6 +407,7 @@ int main()
                 pontuacao = 0;
                 bool jogo = true;
                 bool especialAtivo = false;
+                bool especialColocado = false;
 
                 GerarMatrix(m, dificuldade);
                 while (jogo == true) {
@@ -651,10 +650,10 @@ int main()
                         pontuacao+=10;
                         especialColocado = false;
                         especialAtivo = true;
+                        inicioEspecial = high_resolution_clock::now(); // Inicializa o tempo de início aqui
                     }
 
                     if (especialAtivo == true) {
-                        auto inicioEspecial = high_resolution_clock::now();
                         velocidadeA = velocidade;
                         velocidade = velocidadePoder;
                         auto agoraEspecial = high_resolution_clock::now();
