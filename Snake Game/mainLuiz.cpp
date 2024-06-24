@@ -340,6 +340,9 @@ int main()
     seconds tempoLimite(180);
     //Especial no mapa
     bool especialColocado = false;
+    //Especial ativo
+    milliseconds intervaloEspecial(5000);
+
 
     do {
         clear_console();
@@ -398,11 +401,14 @@ int main()
                 auto inicio = steady_clock::now();
                 milliseconds velocidade(750);
                 milliseconds velocidadeTecla(500);
+                milliseconds velocidadePoder(300);
+                milliseconds velocidadeA(0);
                 auto inicioCobra = high_resolution_clock::now();
                 auto inicioCobraMovimento = high_resolution_clock::now(); //Bloqueio de tecla
                 movimentos = 0;
                 pontuacao = 0;
                 bool jogo = true;
+                bool especialAtivo = false;
 
                 GerarMatrix(m, dificuldade);
                 while (jogo == true) {
@@ -523,16 +529,26 @@ int main()
                         switch (dificuldade)
                         {
                         case 1:
-                            pontuacao+=20; //somando 10 à pontuacao
-                            CobraViva.comeu += 1; //Contador de maçãs comidas
-                            break;
-                        case 2:
                             pontuacao+=10; //somando 10 à pontuacao
                             CobraViva.comeu += 1; //Contador de maçãs comidas
+                            if (especialAtivo == true) {
+                                pontuacao+=10;
+                            }
+                            break;
+                        case 2:
+                            pontuacao+=20; //somando 10 à pontuacao
+                            CobraViva.comeu += 1; //Contador de maçãs comidas
+                            if (especialAtivo == true) {
+                                pontuacao+=10;
+                            }
                             break;
                         case 3:
-                            pontuacao+=5; //somando 10 à pontuacao
+                            pontuacao+=30; //somando 10 à pontuacao
                             CobraViva.comeu += 1; //Contador de maçãs comidas
+                            if (especialAtivo == true) {
+                                pontuacao+=10;
+                            }
+                            break;
                         }
 
                         if (JogoComTimer == true || JogoEspecial == true) {
@@ -632,7 +648,22 @@ int main()
                     //Pegar o poder
                     if (m[Cobra[0].x][Cobra[0].y] == 3) {
                         m[Cobra[0].x][Cobra[0].y] = 0;
+                        pontuacao+=10;
                         especialColocado = false;
+                        especialAtivo = true;
+                    }
+
+                    if (especialAtivo == true) {
+                        auto inicioEspecial = high_resolution_clock::now();
+                        velocidadeA = velocidade;
+                        velocidade = velocidadePoder;
+                        auto agoraEspecial = high_resolution_clock::now();
+                        auto passouEspecial = duration_cast<milliseconds>(agoraEspecial - inicioEspecial);
+                        if (passouEspecial >= intervaloEspecial) {
+                            velocidade = velocidadeA;
+                            inicioEspecial = agoraEspecial;
+                            especialAtivo = false;
+                        }
                     }
 
                 }; //fim do laco do jogo
