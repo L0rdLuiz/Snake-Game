@@ -554,7 +554,7 @@ int main()
                         CobraViva.vivo = false;
                     }
 
-                    if(Cobra.size()==3){                                ///modo especial
+                    if(JogoEspecial== true && Cobra.size()==3){                                ///modo especial
                         jogo = false;
                     }
 
@@ -826,4 +826,3 @@ int main()
 
     return 0;
 } //fim main
-
