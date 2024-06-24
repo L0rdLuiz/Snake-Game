@@ -122,6 +122,26 @@ void GerarMapa(int m[15][17], vector <Snake> Cobra){
         }
 }
 
+void ModoEspecial(vector<Snake>&Cobra){
+    Cobra.clear();
+    Cobra.push_back({13,9});
+    for(int i=14;i>0;i--){
+        if(i%2!=0){
+            for(int j=9;j>0;j--){
+                if(i>0&&i<14&&j>0&&j<9){
+                Cobra.push_back({i,j});
+                }   
+            }
+        } else {
+                for(int j=0;j<9;j++){
+                    if(i>0&&i<14&&j>0&&j<9){
+                    Cobra.push_back({i,j});
+                    } 
+                }
+            }
+     }
+}
+
 void salvarRanking(const string& nome, int &pontuacao,  int tempoEmSegundos, int dificuldade, int movimentos) {  //salva a pontuacao no arquivo
     ofstream arquivoS;
     arquivoS.open("ranking.txt", std::ios_base::app);
@@ -285,9 +305,6 @@ int main()
     int movimentos = 0;
     vector <Snake> Cobra;
     //Posicao inicial do personagem no console
-    Cobra.push_back({5,5});
-    Cobra.push_back({5,4});
-    Cobra.push_back({5,3});
     ///VERIFICAÇÃO COBRA NA HORIZONTAL OU VERTICAL
     bool CobraHorizontal = false;
     bool CobraVertical   = false;
@@ -358,10 +375,16 @@ int main()
 
             do {
                 //Botar coisas para repetir aqui
-                Cobra.clear();
-                Cobra.push_back({5,5});
-                Cobra.push_back({5,4});
-                Cobra.push_back({5,3});
+                if(JogoEspecial==true){
+                    Cobra.clear();
+                    ModoEspecial(Cobra);
+                } else {
+                    Cobra.clear();
+                    Cobra.push_back({5,5});
+                    Cobra.push_back({5,4});
+                    Cobra.push_back({5,3});
+                }
+                
                 CabecaDireita= true;
                 CobraHorizontal = true;
                 CabecaBaixo = CabecaEsquerda = CabecaCima = false;
@@ -473,7 +496,7 @@ int main()
                             }
                             break;
                             case 'o':
-                            CobraViva.comeu +=10;
+                            Cobra.pop_back();
                             break;
                         }
                     }
@@ -488,11 +511,17 @@ int main()
                     cout << "   FASE:    " << FaseJogo << endl; //Fase do jogo
                     cout << "MOVIMENTOS: " << movimentos << endl;
 
+                    ///função da maça
+
                     geraMaca(m, macaNoJogo, Cobra);
 
                     if (m[Cobra[0].x][Cobra[0].y] == 2) {
                         m[Cobra[0].x][Cobra[0].y] = 0;
-                        IncrementoDaCobra(Cobra);
+                        if(JogoEspecial==true){
+                            Cobra.pop_back();
+                        }else {
+                            IncrementoDaCobra(Cobra);
+                        }
                         macaNoJogo = false;
                         switch (dificuldade)
                         {
@@ -515,13 +544,25 @@ int main()
                         }
                     }
 
-                    if (ColisaoCobra(Cobra, m) || ColisaoCobra(Cobra)) {
+                    ///verificações de vitoria e derrota 
+
+                    if (ColisaoCobra(Cobra, m) || ColisaoCobra(Cobra)) { ///colisões normais
                         CobraViva.vivo = false;
                     }
 
-                    if(!CobraViva.vivo) {
+                    if (tempo >= tempoLimite && JogoComTimer == true) { ///modo de timer
+                        CobraViva.vivo = false;
+                    }
+
+                    if(Cobra.size()==3){                                ///modo especial
                         jogo = false;
                     }
+
+                    if(!CobraViva.vivo) {                               ///jogo quebra aqui
+                        jogo = false;
+                    }
+
+                    ///pontuação de acordo com a dificuldade
 
                     if(dificuldade==1){
                         switch (FaseJogo){
@@ -591,16 +632,13 @@ int main()
                         }
                     }
 
+                    ///aumento de velocidade da cobra quando come a maça
+
                     if (CobraViva.comeu % 5 == 0 && CobraViva.comeu != 0 && aumentoVelocidade == false) {
                         velocidade -= diminuirVelocidade;
                         aumentoVelocidade = true;
                     } else if (CobraViva.comeu % 5 != 0 && aumentoVelocidade == true) {
                         aumentoVelocidade = false;
-                    }
-
-                    if (tempo >= tempoLimite && JogoComTimer == true) {
-                        CobraViva.vivo = false;
-                        jogo = false;
                     }
 
                 }; //fim do laco do jogo
@@ -621,7 +659,7 @@ int main()
                     system("cls");
                 }
 
-                if(FaseJogo==4){
+                if(FaseJogo==4){ //vence o jogo
                     system ("cls");
                     auto tempo = final - inicio;
                     int tempoEmSegundos = duration_cast<seconds>(tempo).count(); //tempo no arquivo
@@ -637,7 +675,7 @@ int main()
                     system ("cls");
                 }
 
-                if (CobraViva.vivo == false && JogoComTimer == false && JogoEspecial == false) {
+                if (CobraViva.vivo == false && JogoComTimer == false && JogoEspecial == false) { //se o jogador perde
                     system ("cls");
                     auto tempo = final - inicio;
                     int tempoEmSegundos = duration_cast<seconds>(tempo).count(); //tempo no arquivo
@@ -653,7 +691,7 @@ int main()
                     system ("cls");
                 }
 
-                if (CobraViva.vivo == false && JogoComTimer == true || CobraViva.vivo == false && JogoEspecial == true) {  ///ranking modo desafio
+                if (CobraViva.vivo == false && JogoComTimer == true || CobraViva.vivo == false && JogoEspecial == true) {  //jogador perde nos modos especiais e ranking modo desafio
                     if(escolha==1 || escolha ==2 || escolha ==3){
                         salvarRankingDesafio(nome,pontuacao,tempoEmSegundos,movimentos,escolha);
                         system ("cls");
@@ -670,11 +708,15 @@ int main()
                     }
                 }
 
-                if (CobraViva.comeu == 100) {
+                if (CobraViva.comeu == 100 || JogoEspecial==true && Cobra.size()==3) { //jogador ganha
                     system ("cls");
                     auto tempo = final - inicio;
                     int tempoEmSegundos = duration_cast<seconds>(tempo).count(); //tempo no arquivo
-                    salvarRanking(nome,pontuacao, tempoEmSegundos,dificuldade,movimentos);
+                    if(JogoComTimer==true||JogoEspecial==true){
+                        salvarRankingDesafio(nome,pontuacao,tempoEmSegundos,movimentos,escolha);
+                    } else {
+                        salvarRanking(nome,pontuacao, tempoEmSegundos,dificuldade,movimentos);
+                    }
                     cout<<nome<<" Voce fez: "<<pontuacao<<" pontos.";
                     cout<< endl << "Voce ganhou o jogo"<<endl;
                     cout<<"Jogo feito por:"<<endl<<"Luiz Antonio Haenisch"<<endl<<"Carlos Henrique Okarenski Ramos Depieri"<<endl<<"Isabela Silverio Cardoso Pereira"<<endl;
@@ -784,3 +826,4 @@ int main()
 
     return 0;
 } //fim main
+
