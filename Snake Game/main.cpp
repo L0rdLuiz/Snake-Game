@@ -47,7 +47,7 @@ bool ColisaoCobra(const vector<Snake>& Cobra) {        ///COLISAO DO CORPO
 }
 
 bool ColisaoCobra(const vector<Snake>& Cobra, int m[15][17]) {
-    if (m[Cobra[0].x][Cobra[0].y] == 1) {
+    if (m[Cobra[0].x][Cobra[0].y] != 0) {
         return true;
     } else {
         return false;
@@ -70,7 +70,7 @@ void geraMaca(int m[15][17], bool& macaNoJogo, const vector<Snake>& Cobra) {
                     break;
                 }
             }
-        } while (m[mx][my] == 1 || !posicaoValida);
+        } while (m[mx][my] != 0 || !posicaoValida);
 
         m[mx][my] = 2;
         macaNoJogo = true;
@@ -82,13 +82,22 @@ void IncrementoDaCobra (vector <Snake>&Cobra) { ///AUMENTA O TAMANHO DO CORPO QU
     Cobra.push_back(Cauda);                     ///VECTOR COBRA RECEBE A POSIÇÃO DO STRUCT CAUDA
 }
 
-void GerarMatrix (int m[15][17], int dificuldade){
+void GerarMatrix (int m[15][17], int dificuldade, int FaseJogo){
     for(int i=0;i<15;i++){
         for(int j=0;j<17;j++){
             if(i==0||i==14||j==0||j==16){
                 m[i][j]=1;
             } else {
                 m[i][j]=0;
+            } 
+            if(FaseJogo==2&&i>2&&i<12&&j==8){
+                    m[i][j]=5;
+                }
+            if(FaseJogo==2&&i==8&&j>3&&j<14){
+                    m[i][j]=5;
+            }
+            if(FaseJogo==3&&i>1&&i<13&&i%2==0&&j>3&&j<14){
+                    m[i][j]=5;
             }
         }
     }
@@ -112,7 +121,8 @@ void GerarMapa(int m[15][17], vector <Snake> Cobra){
                             switch (m[i][j]) {
                             case 0: cout << " "; break;         ///caminho
                             case 1: cout << char(219); break;   ///parede
-                            case 2: cout<<char(162); break;     ///maçã
+                            case 2: cout << char(162); break;   ///maçã
+                            case 5: cout << char(176); break;   ///Parede quebravel
                                                                 ///default: cout << "-"; //erro
                             }
                         }                                       ///fim switch
@@ -401,7 +411,7 @@ int main()
                 pontuacao = 0;
                 bool jogo = true;
 
-                GerarMatrix(m, dificuldade);
+                GerarMatrix(m, dificuldade, FaseJogo);
                 while (jogo == true) {
                     ///Posiciona a escrita no inicio do console
                     set_cursor();
@@ -496,7 +506,8 @@ int main()
                             }
                             break;
                             case 'o':
-                            Cobra.pop_back();
+                            jogo = false;
+                            FaseJogo++;
                             break;
                         }
                     }
@@ -664,6 +675,7 @@ int main()
                     auto tempo = final - inicio;
                     int tempoEmSegundos = duration_cast<seconds>(tempo).count(); //tempo no arquivo
                     salvarRanking(nome,pontuacao, tempoEmSegundos,dificuldade,movimentos);
+                    FaseJogo=1;
                     cout<<nome<<" Voce fez: "<<pontuacao<<" pontos.";
                     cout<< endl << "Voce ganhou o jogo"<<endl;
                     cout<<"Jogo feito por:"<<endl<<"Luiz Antonio Haenisch"<<endl<<"Carlos Henrique Okarenski Ramos Depieri"<<endl<<"Isabela Silverio Cardoso Pereira"<<endl;
@@ -680,6 +692,7 @@ int main()
                     auto tempo = final - inicio;
                     int tempoEmSegundos = duration_cast<seconds>(tempo).count(); //tempo no arquivo
                     salvarRanking(nome,pontuacao, tempoEmSegundos,dificuldade,movimentos);
+                    FaseJogo=1;
                     cout<<nome<<" Voce fez: "<<pontuacao<<" pontos.";
                     cout<< endl << "Voce perdeu o jogo"<<endl;
                     cout<<"Jogo feito por:"<<endl<<"Luiz Antonio Haenisch"<<endl<<"Carlos Henrique Okarenski Ramos Depieri"<<endl<<"Isabela Silverio Cardoso Pereira"<<endl;
@@ -697,6 +710,7 @@ int main()
                         system ("cls");
                         auto tempo = final - inicio;
                         int tempoEmSegundos = duration_cast<seconds>(tempo).count(); //tempo no arquivo
+                        FaseJogo=1;
                         cout<<nome<<" Voce fez: "<<pontuacao<<" pontos.";
                         cout<< endl << "Voce perdeu o jogo"<<endl;
                         cout<<"Jogo feito por:"<<endl<<"Luiz Antonio Haenisch"<<endl<<"Carlos Henrique Okarenski Ramos Depieri"<<endl<<"Isabela Silverio Cardoso Pereira"<<endl;
@@ -717,6 +731,7 @@ int main()
                     } else {
                         salvarRanking(nome,pontuacao, tempoEmSegundos,dificuldade,movimentos);
                     }
+                    FaseJogo=1;
                     cout<<nome<<" Voce fez: "<<pontuacao<<" pontos.";
                     cout<< endl << "Voce ganhou o jogo"<<endl;
                     cout<<"Jogo feito por:"<<endl<<"Luiz Antonio Haenisch"<<endl<<"Carlos Henrique Okarenski Ramos Depieri"<<endl<<"Isabela Silverio Cardoso Pereira"<<endl;
