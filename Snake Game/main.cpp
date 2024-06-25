@@ -103,7 +103,7 @@ void GerarMatrix (int m[15][17], int dificuldade, int FaseJogo){
     }
 }
 
-void GerarMapa(int m[15][17], vector <Snake> Cobra, bool& especialColocado){
+void GerarMapa(int m[15][17], vector <Snake> Cobra, bool& especialColocadoPontos, bool& especialColocadoParede, bool& especialColocadoCobra){
     for (int i = 0; i < 15; i++) {
         for (int j = 0; j < 17; j++) {
             bool CobraOn = false;                               ///UMA VARIAVEL BOOLEANA PARA QUEBRAR A IMPRESÃO DA COBRA
@@ -123,34 +123,72 @@ void GerarMapa(int m[15][17], vector <Snake> Cobra, bool& especialColocado){
                     case 1: cout << char(219); break;   ///parede
                     case 2: cout<<char(162); break;     ///maçã
                     case 3: cout<<char(36); break;      ///Poder de Dobra a pontuação por um tempo
-
-                    case 5: cout << char(176); break; ///Parede quebravel
+                    case 4: cout<<char(209); break;    ///Poder de atravessar parede
+                    case 5: cout<<char(176); break;    ///Parede quebravel
+                    case 6: cout<<char(244); break;    ///Poder de atravessar o próprio corpo
                                                         ///default: cout << "-"; //erro
                     }
                 }                                       ///fim switch
             }
 
-            if (especialColocado == false) {
-                int especialPorcentagem = rand() % 100 + 1;
-                if (especialPorcentagem >= 70) {
-                    int ex, ey;
-                    bool posicaoValida;
-                    do {
-                        ex = rand() % 15;
-                        ey = rand() % 17;
+            if (especialColocadoPontos == false) {
+                int ex, ey;
+                bool posicaoPontosValida;
+                do {
+                    ex = rand() % 15;
+                    ey = rand() % 17;
 
-                        // Verificar se a posição está ocupada pelo corpo da cobra
-                        posicaoValida = true;
-                        for (int i = 0; i < Cobra.size(); i++) {
-                            if (Cobra[i].x == ex && Cobra[i].y == ey) {
-                                posicaoValida = false;
-                                break;
-                            }
+                    // Verificar se a posição está ocupada pelo corpo da cobra
+                    posicaoPontosValida = true;
+                    for (int i = 0; i < Cobra.size(); i++) {
+                        if (Cobra[i].x == ex && Cobra[i].y == ey) {
+                            posicaoPontosValida = false;
+                            break;
                         }
-                    } while (m[ex][ey] != 0 || !posicaoValida);
-                    m[ex][ey] = 3;
-                    especialColocado = true;
-                }
+                    }
+                } while (m[ex][ey] != 0 || !posicaoPontosValida);
+                m[ex][ey] = 3;
+                especialColocadoPontos = true;
+            }
+
+            if (especialColocadoParede == false) {
+                int epx, epy;
+                bool posicaoParedeValida;
+                do {
+                    epx = rand() % 15;
+                    epy = rand() % 17;
+
+                    // Verificar se a posição está ocupada pelo corpo da cobra
+                    posicaoParedeValida = true;
+                    for (int i = 0; i < Cobra.size(); i++) {
+                        if (Cobra[i].x == epx && Cobra[i].y == epy) {
+                            posicaoParedeValida = false;
+                            break;
+                        }
+                    }
+                } while (m[epx][epy] != 0 || !posicaoParedeValida);
+                m[epx][epy] = 4;
+                especialColocadoParede = true;
+            }
+
+            if (especialColocadoCobra == false) {
+                int ecx, ecy;
+                bool posicaoCobraValida;
+                do {
+                    ecx = rand() % 15;
+                    ecy = rand() % 17;
+
+                    // Verificar se a posição está ocupada pelo corpo da cobra
+                    posicaoCobraValida = true;
+                    for (int i = 0; i < Cobra.size(); i++) {
+                        if (Cobra[i].x == ecx && Cobra[i].y == ecy) {
+                            posicaoCobraValida = false;
+                            break;
+                        }
+                    }
+                } while (m[ecx][ecy] != 0 || !posicaoCobraValida);
+                m[ecx][ecy] = 6;
+                especialColocadoCobra = true;
             }
         }
     cout << "\n";
@@ -446,16 +484,21 @@ int main()
                 movimentos = 0;
                 pontuacao = 0;
                 bool jogo = true;
-                bool especialAtivo = false;
-                bool especialColocado = false;
+                ///Poderes especiais
+                bool especialAtivoPontos = false;
+                bool especialColocadoPontos = false;
                 auto inicioEspecial = high_resolution_clock::now();
+                bool especialAtivoParede = false;
+                bool especialColocadoParede = false;
+                bool especialAtivoCobra = false;
+                bool especialColocadoCobra = false;
 
                 GerarMatrix(m, dificuldade, FaseJogo);
                 while (jogo == true) {
                     ///Posiciona a escrita no inicio do console
                     set_cursor();
                     ///Imprime o jogo: mapa e personagem.
-                    GerarMapa(m,Cobra, especialColocado);
+                    GerarMapa(m,Cobra, especialColocadoPontos, especialColocadoParede, especialColocadoCobra);
                     //fim for mapa
                     auto agoraCobra = high_resolution_clock::now();
                     auto passouCobra = duration_cast<milliseconds>(agoraCobra - inicioCobra);
@@ -576,21 +619,21 @@ int main()
                         case 1:
                             pontuacao+=10; //somando 10 à pontuacao
                             CobraViva.comeu += 1; //Contador de maçãs comidas
-                            if (especialAtivo == true) {
+                            if (especialAtivoPontos == true) {
                                 pontuacao+=10;
                             }
                             break;
                         case 2:
                             pontuacao+=20; //somando 10 à pontuacao
                             CobraViva.comeu += 1; //Contador de maçãs comidas
-                            if (especialAtivo == true) {
+                            if (especialAtivoPontos == true) {
                                 pontuacao+=10;
                             }
                             break;
                         case 3:
                             pontuacao+=30; //somando 10 à pontuacao
                             CobraViva.comeu += 1; //Contador de maçãs comidas
-                            if (especialAtivo == true) {
+                            if (especialAtivoPontos == true) {
                                 pontuacao+=10;
                             }
                             break;
@@ -701,19 +744,33 @@ int main()
                     if (m[Cobra[0].x][Cobra[0].y] == 3) {
                         m[Cobra[0].x][Cobra[0].y] = 0;
                         pontuacao+=10;
-                        especialColocado = false;
-                        especialAtivo = true;
+                        especialColocadoPontos = false;
+                        especialAtivoPontos = true;
                         velocidade -= diminuirVelocidade;
                         inicioEspecial = high_resolution_clock::now(); // Inicializa o tempo de início aqui
                     }
 
-                    if (especialAtivo == true) {
+                    if (especialAtivoPontos == true) {
                         auto agoraEspecial = high_resolution_clock::now();
                         auto passouEspecial = duration_cast<milliseconds>(agoraEspecial - inicioEspecial);
                         if (passouEspecial >= intervaloEspecial) {
                             inicioEspecial = agoraEspecial;
-                            especialAtivo = false;
+                            especialAtivoPontos = false;
                         }
+                    }
+
+                    if (m[Cobra[0].x][Cobra[0].y] == 4) {
+                        m[Cobra[0].x][Cobra[0].y] = 0;
+                        pontuacao+=10;
+                        especialColocadoParede = false;
+                        especialAtivoParede = true;
+                    }
+
+                    if (m[Cobra[0].x][Cobra[0].y] == 6) {
+                        m[Cobra[0].x][Cobra[0].y] = 0;
+                        pontuacao+=10;
+                        especialColocadoCobra = false;
+                        especialAtivoCobra = true;
                     }
 
                 }; //fim do laco do jogo
@@ -726,7 +783,7 @@ int main()
                     ///musica fica aqui
                 }
 
-                if(FaseJogo>1 && FaseJogo<4){ ///Verificação pra passar de fase
+                if(FaseJogo>1 && FaseJogo<4 && CobraViva.vivo == true){ ///Verificação pra passar de fase
                     system("cls");
                     cout<<"Voce passou de fase!"<<endl;
                     repetir=1;
