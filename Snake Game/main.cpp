@@ -221,19 +221,19 @@ void ModoEspecial(vector<Snake>&Cobra){
      }
 }
 
-void salvarRanking(const string& nome, int &pontuacao,  int tempoEmSegundos, int dificuldade, int movimentos) {  //salva a pontuacao no arquivo
+void salvarRanking(const string& nome, int &pontuacao,  int tempoEmSegundos, int dificuldade, int movimentos) {  ///salva a pontuacao no arquivo
     ofstream arquivoS;
     arquivoS.open("ranking.txt", std::ios_base::app);
     if (arquivoS.is_open()){
-        time_t tempoAtual = time(nullptr); // tempo atual em segundos
+        time_t tempoAtual = time(nullptr); ///tempo atual em segundos
         char dataFormatada[80];
-        strftime(dataFormatada, sizeof(dataFormatada), "%d/%m/%Y %H:%M:%S", localtime(&tempoAtual));
+        strftime(dataFormatada, sizeof(dataFormatada), "%d/%m/%Y %H:%M:%S", localtime(&tempoAtual)); ///ajeitando a data
         arquivoS << "Nome: " << nome <<  endl;
         arquivoS << "Pontuacao: " << pontuacao <<  endl;
         arquivoS << "Tempo de Jogo: " << tempoEmSegundos << " segundos" << endl;
         arquivoS << "Movimentos:" << movimentos << endl;
         if(dificuldade==1){
-            arquivoS << "Dificuldade: " << "Facil" << endl;
+             arquivoS << "Dificuldade: " << "Facil" << endl;
         }else if(dificuldade==2){
             arquivoS << "Dificuldade: " << "Medio" << endl;
         }else if(dificuldade==3){
@@ -247,7 +247,7 @@ void salvarRanking(const string& nome, int &pontuacao,  int tempoEmSegundos, int
 }
 
 
-void salvarRankingDesafio(const string& nome, int &pontuacao,  int tempoEmSegundos,int movimentos, int &escolha){
+void salvarRankingDesafio(const string& nome, int &pontuacao,  int tempoEmSegundos,int movimentos, int &escolha){  ///ranking separado para o desafio
 
    ofstream arquivoS;
     arquivoS.open("rankingDesafio.txt", std::ios_base::app);
@@ -271,12 +271,13 @@ void salvarRankingDesafio(const string& nome, int &pontuacao,  int tempoEmSegund
 
 }
 
-///recursividade (ordenando rank)
+///recursividade ordenando rank pares
+///realiza trocas para posicionar os elementos em ordem decrescente com base no primeiro elemento
 
 void exibirRankingRecursivo(vector<pair<int, string>>& ranking, int esquerda, int direita) {
     if (esquerda < direita)
     {
-        int pivo = ranking[direita].first;
+        int pivo = ranking[direita].first; ///pivo selecionado como ultimo elemento, usado para a base da comparacao
         int i = esquerda - 1;
         for (int j = esquerda; j <= direita - 1; j++)
         {
@@ -288,8 +289,8 @@ void exibirRankingRecursivo(vector<pair<int, string>>& ranking, int esquerda, in
         }
         swap(ranking[i + 1], ranking[direita]);
         int indice = i + 1;
-        exibirRankingRecursivo(ranking, esquerda, indice - 1);
-        exibirRankingRecursivo(ranking, indice + 1, direita);
+        exibirRankingRecursivo(ranking, esquerda, indice - 1); ///ordenando esquerda
+        exibirRankingRecursivo(ranking, indice + 1, direita); ///ordenando direita
     }
 }
 
@@ -330,6 +331,8 @@ void exibirRanking() { ///exibi rank ordenado em tela
     }
 }
 
+
+
 void exibirRankingDesafio(){
     ifstream arquivoS;
     string linha;
@@ -367,6 +370,8 @@ void exibirRankingDesafio(){
         cout << "Erro ao abrir o arquivo de ranking." << endl;
     }
 }
+
+
 
 int main()
 {
@@ -417,6 +422,7 @@ int main()
     milliseconds intervaloEspecial(5000);
 
     do {
+        PlaySound(TEXT("menu.wav"), NULL, SND_ASYNC);
         clear_console();
 
         cout << "                           _____             _        " << endl;
@@ -459,6 +465,7 @@ int main()
 
             do {
                 //Botar coisas para repetir aqui
+                PlaySound(TEXT("trilha.wav"), NULL, SND_ASYNC);
                 if(JogoEspecial==true){
                     Cobra.clear();
                     ModoEspecial(Cobra);
@@ -786,7 +793,7 @@ int main()
                 }
 
                 if(CobraViva.vivo == false){
-                    ///musica fica aqui
+                    PlaySound(TEXT("morreu.wav"), NULL, SND_ASYNC); //som morte cobra
                 }
 
                 if(FaseJogo>1 && FaseJogo<4 && CobraViva.vivo == true){ ///Verificação pra passar de fase
@@ -886,13 +893,17 @@ int main()
             } while (repetir == 1);
             break;
         }
-        case 2: //Sobre o jogo
+        case 2: ///Sobre o jogo
             system ("cls");
             cout<<endl<<endl<<endl<<endl;
             cout << "OBJETIVO: Coma 100 macas sem colidir com a parede ou com a cobra." << endl;
             cout << "MOVIMENTO: Use W, A, S e D para mover a cobra que se move sempre para frente" << endl;
             cout << "MACAS: Mova-se em direcao as macas para come-las e crescer." << endl;
             cout << "EVITAR COLISOES: Evite colidir com a parede ou com o corpo da cobra." << endl;
+            cout << "ITENS ESPECIAIS:" << endl;
+            cout << "$: ganhe pontos a mais" << endl;
+            cout << "Ɖ: passe atraves de paredes a partir da fase 2" << endl;
+            cout << "g: esbarre em seu corpo sem morrer" << endl;
             cout << "PONTUACAO POR DIFICULDADE" << endl;
             cout << "FACIL:" <<endl;
             cout << "Na fase 1 a cada maca coletada o jogador recebe 20 pontos." << endl;
@@ -917,7 +928,7 @@ int main()
             system("pause");
             system ("cls");
             break;
-        case 3: //Rank
+        case 3: ///Acessar rank no menu
             system("cls");
             cout << "1-Rank" << endl;
             cout << "2- Rank modo desafio" << endl;
@@ -927,17 +938,13 @@ int main()
                 exibirRanking();
                 system("pause");
                 main();
-
-
-
             }else if(escolhaRank==2){
                  exibirRankingDesafio();
                  system("pause");
                  main();
-
             }
 
-        case 4: // Modos Especiais
+        case 4: /// Modos Especiais
             system("cls");
             cout << "Escolha entre um dos modos especiais:" << endl << endl;
             cout << "Escolha uma opcao (1, 2, 3): " << endl << endl;
@@ -969,7 +976,8 @@ int main()
                 return 0;
             }
         break;
-        case 5: //Obrigado por jogar
+        case 5: ///Obrigado por jogar
+            cout << endl << "Obrigado por jogar" << endl;
             break;
         default:
             cout << "Esta opcao nao e aceita digite outro numero"<<endl;
