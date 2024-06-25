@@ -542,7 +542,7 @@ int main()
                     pontuacao = pontuacaoAnterior;
                     movimentos = movimentosAnterior;
                 }
-                milliseconds velocidadeTecla(500);
+                milliseconds velocidadeTecla(250);
                 auto inicioCobra = high_resolution_clock::now();
                 auto inicioCobraMovimento = high_resolution_clock::now(); //Bloqueio de tecla
                 bool jogo = true;
