@@ -971,12 +971,12 @@ int main()
             cout << "Na fase 3 a cada maca coletada o jogador recebe 100 pontos." << endl;
             cout << "MEDIO: " << endl;
             cout << "Na fase 1 a cada maca coletada o jogador recebe 40 pontos." << endl;
-            cout << "Na fase 1 a cada maca coletada o jogador recebe 70 pontos." << endl;
-            cout << "Na fase 1 a cada maca coletada o jogador recebe 100 pontos." << endl;
+            cout << "Na fase 2 a cada maca coletada o jogador recebe 70 pontos." << endl;
+            cout << "Na fase 3 a cada maca coletada o jogador recebe 100 pontos." << endl;
             cout << "DIFICIL:" << endl;
             cout << "Na fase 1 a cada maca coletada o jogador recebe 50 pontos." << endl;
-            cout << "Na fase 1 a cada maca coletada o jogador recebe 100 pontos." << endl;
-            cout << "Na fase 1 a cada maca coletada o jogador recebe 120 pontos." << endl;
+            cout << "Na fase 2 a cada maca coletada o jogador recebe 100 pontos." << endl;
+            cout << "Na fase 3 a cada maca coletada o jogador recebe 120 pontos." << endl;
             cout << "MODO DESAFIO: " << endl;
             cout << "Desbloqueie seu potencial no modo desafio e divirta-se!" << endl;
 
