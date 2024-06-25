@@ -657,6 +657,7 @@ int main()
                                 FaseJogo++;
                                 pontuacaoAnterior = pontuacao;
                                 movimentosAnterior = movimentos;
+                                ///Cobra.pop_back();
                                 break;
                             }
                         }
