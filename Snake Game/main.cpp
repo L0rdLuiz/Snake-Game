@@ -978,7 +978,7 @@ int main()
             cout << "Na fase 2 a cada maca coletada o jogador recebe 100 pontos." << endl;
             cout << "Na fase 3 a cada maca coletada o jogador recebe 120 pontos." << endl;
             cout << "MODO DESAFIO: " << endl;
-            cout << "Desbloqueie seu potencial no modo desafio e divirta-se!" << endl;
+            cout << "Jogo com tempo: faca o maximo de pontos em 3 minutos" << endl;
 
 
 
