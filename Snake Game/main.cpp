@@ -37,18 +37,24 @@ void MovimentoCobra(vector <Snake> &Cobra) { ///MOVIMENTO DO CORPO
         }
 }
 
-bool ColisaoCobra(const vector<Snake>& Cobra) {        ///COLISAO DO CORPO
-    for(int i =1;i<Cobra.size();i++){                       ///FOR DO PESCOÇO PRA FRENTE, POIS NÃO PRECISA DA CABEÇÇA
-        if(Cobra[0].x==Cobra[i].x&&Cobra[0].y==Cobra[i].y){ ///VERIFICA SE A CABEÇA ESTA ENCOSTADA EM ALGUMA PARTE DO CORPO TODO
-            return true;
+bool ColisaoCobra(const vector<Snake>& Cobra, bool especialAtivoCobra) {        ///COLISAO DO CORPO
+    if (especialAtivoCobra == false){
+        for(int i =1;i<Cobra.size();i++){                       ///FOR DO PESCOÇO PRA FRENTE, POIS NÃO PRECISA DA CABEÇÇA
+            if(Cobra[0].x==Cobra[i].x&&Cobra[0].y==Cobra[i].y){ ///VERIFICA SE A CABEÇA ESTA ENCOSTADA EM ALGUMA PARTE DO CORPO TODO
+                return true;
+            }
         }
+        return false;
+    } else {
+        return false;
     }
-    return false;
 }
 
-bool ColisaoCobra(const vector<Snake>& Cobra, int m[15][17]) {
-    if (m[Cobra[0].x][Cobra[0].y] == 1 || m[Cobra[0].x][Cobra[0].y] == 5) {
+bool ColisaoCobra(const vector<Snake>& Cobra, int m[15][17], bool especialAtivoParede) {
+    if (m[Cobra[0].x][Cobra[0].y] == 1 || m[Cobra[0].x][Cobra[0].y] == 5 && especialAtivoParede == false) {
         return true;
+    } else if (m[Cobra[0].x][Cobra[0].y] == 5 && especialAtivoParede == true) {
+        return false;
     } else {
         return false;
     }
@@ -124,7 +130,7 @@ void GerarMapa(int m[15][17], vector <Snake> Cobra, bool& especialColocadoPontos
                     case 2: cout<<char(162); break;     ///maçã
                     case 3: cout<<char(36); break;      ///Poder de Dobra a pontuação por um tempo
                     case 4: cout<<char(209); break;    ///Poder de atravessar parede
-                    case 5: cout<<char(176); break;    ///Parede quebravel
+                    case 5: cout<<char(35); break;    ///Parede quebravel
                     case 6: cout<<char(244); break;    ///Poder de atravessar o próprio corpo
                                                         ///default: cout << "-"; //erro
                     }
@@ -647,7 +653,7 @@ int main()
 
                     ///verificações de vitoria e derrota
 
-                    if (ColisaoCobra(Cobra, m) || ColisaoCobra(Cobra)) { ///colisões normais
+                    if (ColisaoCobra(Cobra, m, especialAtivoParede) || ColisaoCobra(Cobra, especialAtivoCobra)) { ///colisões normais
                         CobraViva.vivo = false;
                     }
 
