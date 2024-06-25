@@ -221,6 +221,37 @@ void ModoEspecial(vector<Snake>&Cobra){
      }
 }
 
+void pontosMovimentosGastos(int movimentos, int dificuldade, int& pontuacao, bool JogoComTimer, bool JogoEspecial, bool& diminuiuPontos) {
+    if (!JogoComTimer && !JogoEspecial) {
+        switch(dificuldade) {
+            case 1: // Fácil
+                if (movimentos % 50 == 0 && movimentos != 0 && !diminuiuPontos && pontuacao < 0) {
+                    pontuacao -= 20;
+                    diminuiuPontos = true;
+                } else if (movimentos % 50 != 0) {
+                    diminuiuPontos = false;
+                }
+                break;
+            case 2: // Médio
+                if (movimentos % 40 == 0 && movimentos != 0 && !diminuiuPontos && pontuacao < 0) {
+                    pontuacao -= 20;
+                    diminuiuPontos = true;
+                } else if (movimentos % 40 != 0) {
+                    diminuiuPontos = false;
+                }
+                break;
+            case 3: // Difícil
+                if (movimentos % 30 == 0 && movimentos != 0 && !diminuiuPontos && pontuacao < 0) {
+                    pontuacao -= 20;
+                    diminuiuPontos = true;
+                } else if (movimentos % 30 != 0) {
+                    diminuiuPontos = false;
+                }
+                break;
+        }
+    }
+}
+
 void salvarRanking(const string& nome, int &pontuacao,  int tempoEmSegundos, int dificuldade, int movimentos) {  ///salva a pontuacao no arquivo
     ofstream arquivoS;
     arquivoS.open("ranking.txt", std::ios_base::app);
@@ -383,10 +414,12 @@ int main()
     int dificuldade;
     int FaseJogo = 1;
     int m[15][17];
-    int pontuacao = 0;
+    int pontuacao;
+    int pontuacaoAnterior;
     int repetir = 0;
     int TamanhoCobra = 3;
-    int movimentos = 0;
+    int movimentos;
+    int movimentosAnterior;
     vector <Snake> Cobra;
     //Posicao inicial do personagem no console
     Cobra.push_back({5,5});
@@ -464,8 +497,9 @@ int main()
             auto inicio = steady_clock::now();
 
             do {
-                //Botar coisas para repetir aqui
+                ///Botar coisas para repetir aqui
                 PlaySound(TEXT("trilha.wav"), NULL, SND_ASYNC);
+                ///Modo especial e Modo normal
                 if(JogoEspecial==true){
                     Cobra.clear();
                     ModoEspecial(Cobra);
@@ -484,19 +518,29 @@ int main()
                 bool aumentoVelocidade = false;
                 auto inicio = steady_clock::now();
                 milliseconds velocidade;
-                if (dificuldade == 1) {
+                if (dificuldade == 1 && IAJogo == false) {
                     velocidade = milliseconds(750);
-                } else if (dificuldade == 2) {
+                } else if (dificuldade == 2 && IAJogo == false) {
                     velocidade = milliseconds(600);
-                } else {
+                } else if (dificuldade == 3 && IAJogo == false) {
                     velocidade = milliseconds(450);
+                }
+                if (IAJogo == true) {
+                    velocidade = milliseconds(200);
+                }
+                ///Reseta pontos e movimentos
+                if (FaseJogo == 1) {
+                    pontuacao = 0;
+                    movimentos = 0;
+                } else {
+                    pontuacao = pontuacaoAnterior;
+                    movimentos = movimentosAnterior;
                 }
                 milliseconds velocidadeTecla(500);
                 auto inicioCobra = high_resolution_clock::now();
                 auto inicioCobraMovimento = high_resolution_clock::now(); //Bloqueio de tecla
-                movimentos = 0;
-                pontuacao = 0;
                 bool jogo = true;
+                bool diminuiuPontos = false;
                 ///Poderes especiais
                 bool especialAtivoPontos = false;
                 bool especialColocadoPontos = false;
@@ -557,9 +601,7 @@ int main()
                                 CabecaBaixo = CabecaDireita = CabecaEsquerda = false;
                                 inicioCobraMovimento = agoraCobraMovimento;
                                 inicioCobra = agoraCobraMovimento;
-
                             }
-
                             break;
                         case 80:
                         case 's': ///baixo
@@ -603,6 +645,8 @@ int main()
                             case 'o':
                             jogo = false;
                             FaseJogo++;
+                            pontuacaoAnterior = pontuacao;
+                            movimentosAnterior = movimentos;
                             break;
                         }
                     }
@@ -618,6 +662,7 @@ int main()
                     cout << "MOVIMENTOS: " << movimentos << endl;
 
                     geraMaca(m, macaNoJogo, Cobra);
+                    pontosMovimentosGastos(movimentos, dificuldade, pontuacao, JogoComTimer, JogoEspecial, diminuiuPontos);
 
                     if (m[Cobra[0].x][Cobra[0].y] == 2) {
                         m[Cobra[0].x][Cobra[0].y] = 0;
@@ -684,18 +729,24 @@ int main()
                             if (CobraViva.comeu == 20) {
                                 jogo = false;
                                 FaseJogo++;
+                                pontuacaoAnterior = pontuacao;
+                                movimentosAnterior = movimentos;
                             }
                             break;
                         case 2:
                              if (CobraViva.comeu == 50) {
                                 jogo = false;
                                 FaseJogo++;
+                                pontuacaoAnterior = pontuacao;
+                                movimentosAnterior = movimentos;
                             }
                             break;
                         case 3:
                             if (CobraViva.comeu == 100) {
                                jogo = false;
                                FaseJogo++;
+                               pontuacaoAnterior = pontuacao;
+                               movimentosAnterior = movimentos;
                             }
                             break;
                         }
@@ -706,18 +757,24 @@ int main()
                             if (CobraViva.comeu == 40) {
                                 jogo = false;
                                 FaseJogo++;
+                                pontuacaoAnterior = pontuacao;
+                                movimentosAnterior = movimentos;
                             }
                             break;
                         case 2:
                              if (CobraViva.comeu == 70) {
                                 jogo = false;
                                 FaseJogo++;
+                                pontuacaoAnterior = pontuacao;
+                                movimentosAnterior = movimentos;
                             }
                             break;
                         case 3:
                             if (CobraViva.comeu == 100) {
                                jogo = false;
                                FaseJogo++;
+                               pontuacaoAnterior = pontuacao;
+                               movimentosAnterior = movimentos;
                             }
                             break;
                         }
@@ -728,18 +785,24 @@ int main()
                             if (CobraViva.comeu == 50) {
                                 jogo = false;
                                 FaseJogo++;
+                                pontuacaoAnterior = pontuacao;
+                                movimentosAnterior = movimentos;
                             }
                             break;
                         case 2:
                              if (CobraViva.comeu == 100) {
                                 jogo = false;
                                 FaseJogo++;
+                                pontuacaoAnterior = pontuacao;
+                                movimentosAnterior = movimentos;
                             }
                             break;
                         case 3:
                             if (CobraViva.comeu == 120) {
                                jogo = false;
                                FaseJogo++;
+                               pontuacaoAnterior = pontuacao;
+                               movimentosAnterior = movimentos;
                             }
                             break;
                         }
@@ -817,7 +880,6 @@ int main()
                     cout<<"Quer jogar novamente?"<<endl;
                     cout<<"Digite 1 para jogar de novo ou 0 retornar ao menu"<<endl;
                     cin>>repetir;
-
                     system ("cls");
                 }
 
@@ -834,7 +896,6 @@ int main()
                     cout<<"Quer jogar novamente?"<<endl;
                     cout<<"Digite 1 para jogar de novo ou 0 retornar ao menu"<<endl;
                     cin>>repetir;
-
                     system ("cls");
                 }
 
@@ -867,7 +928,6 @@ int main()
                     cout<<"Quer jogar novamente?"<<endl;
                     cout<<"Digite 1 para jogar de novo ou 0 retornar ao menu"<<endl;
                     cin>>repetir;
-
                     system ("cls");
                 }
 
