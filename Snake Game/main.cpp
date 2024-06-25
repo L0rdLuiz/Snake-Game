@@ -60,9 +60,8 @@ bool ColisaoCobra(const vector<Snake>& Cobra, int m[15][17], bool especialAtivoP
     }
 }
 
-void geraMaca(int m[15][17], bool& macaNoJogo, const vector<Snake>& Cobra) {
+void geraMaca(int m[15][17], bool& macaNoJogo, const vector<Snake>& Cobra, int& mx, int& my) {
     if (!macaNoJogo) {
-        int mx, my;
         bool posicaoValida;
         do {
             mx = rand() % 15;
@@ -402,7 +401,10 @@ void exibirRankingDesafio(){
     }
 }
 
-
+//// Função para verificar se a posição é segura (não é uma parede)
+//bool posicaoSegura(int x, int y) {
+//    return m[y][x] != 1; // Assumindo que 'm' é a matriz do jogo e 1 representa uma parede
+//}
 
 int main()
 {
@@ -442,6 +444,7 @@ int main()
     //Gerador de Maçã
     srand (time(NULL));
     bool macaNoJogo = false;
+    int mx, my;
     //Cobra viva
     Snake CobraViva;
     milliseconds diminuirVelocidade(45);
@@ -593,69 +596,171 @@ int main()
                     auto passouCobraMovimento = duration_cast<milliseconds>(agoraCobraMovimento - inicioCobraMovimento);
 
                     ///executa os movimentos
-                    if (_kbhit()) {
-                        tecla = get_input_without_enter();
-                        switch (tecla) {
-                        case 72:
-                        case 'w': ///cima
-                            if(CobraHorizontal==true && passouCobraMovimento >= velocidadeTecla) {
-                                MovimentoCobra(Cobra);
-                                Cobra[0].x--;
-                                CobraVertical=true;
-                                CobraHorizontal=false;
-                                CabecaCima = true;
-                                CabecaBaixo = CabecaDireita = CabecaEsquerda = false;
-                                inicioCobraMovimento = agoraCobraMovimento;
-                                inicioCobra = agoraCobraMovimento;
+//                    if (IAJogo == false) {
+                        if (_kbhit()) {
+                            tecla = get_input_without_enter();
+                            switch (tecla) {
+                            case 72:
+                            case 'w': ///cima
+                                if(CobraHorizontal==true && passouCobraMovimento >= velocidadeTecla) {
+                                    MovimentoCobra(Cobra);
+                                    Cobra[0].x--;
+                                    CobraVertical=true;
+                                    CobraHorizontal=false;
+                                    CabecaCima = true;
+                                    CabecaBaixo = CabecaDireita = CabecaEsquerda = false;
+                                    inicioCobraMovimento = agoraCobraMovimento;
+                                    inicioCobra = agoraCobraMovimento;
+                                }
+                                break;
+                            case 80:
+                            case 's': ///baixo
+                                if(CobraHorizontal==true && passouCobraMovimento >= velocidadeTecla) {
+                                    MovimentoCobra(Cobra);
+                                    Cobra[0].x++;
+                                    CobraVertical=true;
+                                    CobraHorizontal=false;
+                                    CabecaBaixo = true;
+                                    CabecaCima = CabecaDireita = CabecaEsquerda = false;
+                                    inicioCobraMovimento = agoraCobraMovimento;
+                                    inicioCobra = agoraCobraMovimento;
+                                }
+                                break;
+                            case 75:
+                            case 'a': ///esquerda
+                                if(CobraVertical==true && passouCobraMovimento >= velocidadeTecla) {
+                                    MovimentoCobra(Cobra);
+                                    Cobra[0].y--;
+                                    CobraVertical=false;
+                                    CobraHorizontal=true;
+                                    CabecaEsquerda = true;
+                                    CabecaCima = CabecaBaixo = CabecaDireita = false;
+                                    inicioCobraMovimento = agoraCobraMovimento;
+                                    inicioCobra = agoraCobraMovimento;
+                                }
+                                break;
+                            case 77:
+                            case 'd': ///direita
+                                if(CobraVertical==true && passouCobraMovimento >= velocidadeTecla) {
+                                    MovimentoCobra(Cobra);
+                                    Cobra[0].y++;
+                                    CobraVertical=false;
+                                    CobraHorizontal=true;
+                                    CabecaDireita = true;
+                                    CabecaCima = CabecaBaixo = CabecaEsquerda = false;
+                                    inicioCobraMovimento = agoraCobraMovimento;
+                                    inicioCobra = agoraCobraMovimento;
+                                }
+                                break;
+                                case 'o':
+                                jogo = false;
+                                FaseJogo++;
+                                pontuacaoAnterior = pontuacao;
+                                movimentosAnterior = movimentos;
+                                break;
                             }
-                            break;
-                        case 80:
-                        case 's': ///baixo
-                            if(CobraHorizontal==true && passouCobraMovimento >= velocidadeTecla) {
-                                MovimentoCobra(Cobra);
-                                Cobra[0].x++;
-                                CobraVertical=true;
-                                CobraHorizontal=false;
-                                CabecaBaixo = true;
-                                CabecaCima = CabecaDireita = CabecaEsquerda = false;
-                                inicioCobraMovimento = agoraCobraMovimento;
-                                inicioCobra = agoraCobraMovimento;
-                            }
-                            break;
-                        case 75:
-                        case 'a': ///esquerda
-                            if(CobraVertical==true && passouCobraMovimento >= velocidadeTecla) {
-                                MovimentoCobra(Cobra);
-                                Cobra[0].y--;
-                                CobraVertical=false;
-                                CobraHorizontal=true;
-                                CabecaEsquerda = true;
-                                CabecaCima = CabecaBaixo = CabecaDireita = false;
-                                inicioCobraMovimento = agoraCobraMovimento;
-                                inicioCobra = agoraCobraMovimento;
-                            }
-                            break;
-                        case 77:
-                        case 'd': ///direita
-                            if(CobraVertical==true && passouCobraMovimento >= velocidadeTecla) {
-                                MovimentoCobra(Cobra);
-                                Cobra[0].y++;
-                                CobraVertical=false;
-                                CobraHorizontal=true;
-                                CabecaDireita = true;
-                                CabecaCima = CabecaBaixo = CabecaEsquerda = false;
-                                inicioCobraMovimento = agoraCobraMovimento;
-                                inicioCobra = agoraCobraMovimento;
-                            }
-                            break;
-                            case 'o':
-                            jogo = false;
-                            FaseJogo++;
-                            pontuacaoAnterior = pontuacao;
-                            movimentosAnterior = movimentos;
-                            break;
                         }
-                    }
+//                    } else if (IAJogo == true) {
+//                        int movDir;
+//
+//                        // Decidindo a direção de movimento
+//                        if (abs(mx - Cobra[0].x) > abs(my - Cobra[0].y)) {
+//                            if (mx > Cobra[0].x && movDir != 4 && posicaoSegura(Cobra[0].x + 1, Cobra[0].y)) {
+//                                movDir = 3; // Mover para a direita
+//                            } else if (mx < Cobra[0].x && movDir != 3 && posicaoSegura(Cobra[0].x - 1, Cobra[0].y)) {
+//                                movDir = 4; // Mover para a esquerda
+//                            } else if (my > Cobra[0].y && movDir != 1 && posicaoSegura(Cobra[0].x, Cobra[0].y + 1)) {
+//                                movDir = 2; // Mover para baixo
+//                            } else if (my < Cobra[0].y && movDir != 2 && posicaoSegura(Cobra[0].x, Cobra[0].y - 1)) {
+//                                movDir = 1; // Mover para cima
+//                            } else {
+//                                // Caso a direção escolhida não seja segura, escolher uma direção alternativa
+//                                if (CobraHorizontal) {
+//                                    if (posicaoSegura(Cobra[0].x, Cobra[0].y + 1)) {
+//                                        movDir = 2; // Mover para baixo
+//                                    } else if (posicaoSegura(Cobra[0].x, Cobra[0].y - 1)) {
+//                                        movDir = 1; // Mover para cima
+//                                    }
+//                                } else if (CobraVertical) {
+//                                    if (posicaoSegura(Cobra[0].x + 1, Cobra[0].y)) {
+//                                        movDir = 3; // Mover para a direita
+//                                    } else if (posicaoSegura(Cobra[0].x - 1, Cobra[0].y)) {
+//                                        movDir = 4; // Mover para a esquerda
+//                                    }
+//                                }
+//                            }
+//                        } else {
+//                            if (my > Cobra[0].y && movDir != 1 && posicaoSegura(Cobra[0].x, Cobra[0].y + 1)) {
+//                                movDir = 2; // Mover para baixo
+//                            } else if (my < Cobra[0].y && movDir != 2 && posicaoSegura(Cobra[0].x, Cobra[0].y - 1)) {
+//                                movDir = 1; // Mover para cima
+//                            } else if (mx > Cobra[0].x && movDir != 4 && posicaoSegura(Cobra[0].x + 1, Cobra[0].y)) {
+//                                movDir = 3; // Mover para a direita
+//                            } else if (mx < Cobra[0].x && movDir != 3 && posicaoSegura(Cobra[0].x - 1, Cobra[0].y)) {
+//                                movDir = 4; // Mover para a esquerda
+//                            } else {
+//                                // Caso a direção escolhida não seja segura, escolher uma direção alternativa
+//                                if (CobraHorizontal) {
+//                                    if (posicaoSegura(Cobra[0].x, Cobra[0].y + 1)) {
+//                                        movDir = 2; // Mover para baixo
+//                                    } else if (posicaoSegura(Cobra[0].x, Cobra[0].y - 1)) {
+//                                        movDir = 1; // Mover para cima
+//                                    }
+//                                } else if (CobraVertical) {
+//                                    if (posicaoSegura(Cobra[0].x + 1, Cobra[0].y)) {
+//                                        movDir = 3; // Mover para a direita
+//                                    } else if (posicaoSegura(Cobra[0].x - 1, Cobra[0].y)) {
+//                                        movDir = 4; // Mover para a esquerda
+//                                    }
+//                                }
+//                            }
+//                        }
+//
+//                        // Executando o movimento
+//                        switch (movDir) {
+//                            case 1: // Para cima
+//                                if (CobraHorizontal && posicaoSegura(Cobra[0].x, Cobra[0].y - 1)) {
+//                                    MovimentoCobra(Cobra);
+//                                    Cobra[0].y--; // Movendo para cima (diminuindo y)
+//                                    CobraVertical = true;
+//                                    CobraHorizontal = false;
+//                                    CabecaCima = true;
+//                                    CabecaBaixo = CabecaDireita = CabecaEsquerda = false;
+//                                }
+//                                break;
+//                            case 2: // Para baixo
+//                                if (CobraHorizontal && posicaoSegura(Cobra[0].x, Cobra[0].y + 1)) {
+//                                    MovimentoCobra(Cobra);
+//                                    Cobra[0].y++; // Movendo para baixo (aumentando y)
+//                                    CobraVertical = true;
+//                                    CobraHorizontal = false;
+//                                    CabecaBaixo = true;
+//                                    CabecaCima = CabecaDireita = CabecaEsquerda = false;
+//                                }
+//                                break;
+//                            case 3: // Para a direita
+//                                if (CobraVertical && posicaoSegura(Cobra[0].x + 1, Cobra[0].y)) {
+//                                    MovimentoCobra(Cobra);
+//                                    Cobra[0].x++; // Movendo para a direita (aumentando x)
+//                                    CobraVertical = false;
+//                                    CobraHorizontal = true;
+//                                    CabecaDireita = true;
+//                                    CabecaCima = CabecaBaixo = CabecaEsquerda = false;
+//                                }
+//                                break;
+//                            case 4: // Para a esquerda
+//                                if (CobraVertical && posicaoSegura(Cobra[0].x - 1, Cobra[0].y)) {
+//                                    MovimentoCobra(Cobra);
+//                                    Cobra[0].x--; // Movendo para a esquerda (diminuindo x)
+//                                    CobraVertical = false;
+//                                    CobraHorizontal = true;
+//                                    CabecaEsquerda = true;
+//                                    CabecaCima = CabecaBaixo = CabecaDireita = false;
+//                                }
+//                                break;
+//                        }
+//                    }
+
                     //tempo em tela
                     final = steady_clock::now();
                     auto tempo = final - inicio;
@@ -667,7 +772,7 @@ int main()
                     cout << "   FASE:    " << FaseJogo << endl; //Fase do jogo
                     cout << "MOVIMENTOS: " << movimentos << endl;
 
-                    geraMaca(m, macaNoJogo, Cobra);
+                    geraMaca(m, macaNoJogo, Cobra, mx, my);
                     pontosMovimentosGastos(movimentos, dificuldade, pontuacao, JogoComTimer, JogoEspecial, diminuiuPontos);
 
                     if (m[Cobra[0].x][Cobra[0].y] == 2) {
@@ -978,6 +1083,7 @@ int main()
             cout << "A cada maca coletada o jogador recebe 30 pontos" << endl;
             cout << "MODO DESAFIO: " << endl;
             cout << "Jogo com tempo: faca o maximo de pontos em 3 minutos" << endl << endl;
+            cout << "Jogo Especial: Voce começa com 100 de espaço e a cada maca seu corpo diminui, seu objetivo e chegar em 0" << endl << endl;
             cout << "BOA SORTE!" << endl << endl;
             system("pause");
             system ("cls");
