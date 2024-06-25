@@ -528,6 +528,12 @@ int main()
                 if (IAJogo == true) {
                     velocidade = milliseconds(200);
                 }
+                if (JogoComTimer == true) {
+                    velocidade = milliseconds(600);
+                }
+                if (JogoEspecial == true) {
+                    velocidade = milliseconds(600);
+                }
                 ///Reseta pontos e movimentos
                 if (FaseJogo == 1) {
                     pontuacao = 0;
