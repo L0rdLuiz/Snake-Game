@@ -956,34 +956,22 @@ int main()
         case 2: ///Sobre o jogo
             system ("cls");
             cout<<endl<<endl<<endl<<endl;
-            cout << "OBJETIVO: Coma 100 macas sem colidir com a parede ou com a cobra." << endl;
             cout << "MOVIMENTO: Use W, A, S e D para mover a cobra que se move sempre para frente" << endl;
             cout << "MACAS: Mova-se em direcao as macas para come-las e crescer." << endl;
             cout << "EVITAR COLISOES: Evite colidir com a parede ou com o corpo da cobra." << endl;
             cout << "ITENS ESPECIAIS:" << endl;
-            cout << "$: ganhe pontos a mais" << endl;
-            cout << "Ɖ: passe atraves de paredes a partir da fase 2" << endl;
-            cout << "g: esbarre em seu corpo sem morrer" << endl;
+            cout << "- ganhe pontos a mais" << endl;
+            cout << "- passe atraves de paredes " << endl;
+            cout << "- esbarre em seu corpo sem morrer" << endl;
             cout << "PONTUACAO POR DIFICULDADE" << endl;
             cout << "FACIL:" <<endl;
-            cout << "Na fase 1 a cada maca coletada o jogador recebe 20 pontos." << endl;
-            cout << "Na fase 2 a cada maca coletada o jogador recebe 50 pontos." << endl;
-            cout << "Na fase 3 a cada maca coletada o jogador recebe 100 pontos." << endl;
+            cout << "A cada maca coletada o jogador recebe 10 pontos." << endl;
             cout << "MEDIO: " << endl;
-            cout << "Na fase 1 a cada maca coletada o jogador recebe 40 pontos." << endl;
-            cout << "Na fase 2 a cada maca coletada o jogador recebe 70 pontos." << endl;
-            cout << "Na fase 3 a cada maca coletada o jogador recebe 100 pontos." << endl;
+            cout << "A cada maca coletada o jogador recebe 20 pontos"<<endl;
             cout << "DIFICIL:" << endl;
-            cout << "Na fase 1 a cada maca coletada o jogador recebe 50 pontos." << endl;
-            cout << "Na fase 2 a cada maca coletada o jogador recebe 100 pontos." << endl;
-            cout << "Na fase 3 a cada maca coletada o jogador recebe 120 pontos." << endl;
+            cout << "A cada maca coletada o jogador recebe 30 pontos" << endl;
             cout << "MODO DESAFIO: " << endl;
-            cout << "Jogo com tempo: faca o maximo de pontos em 3 minutos" << endl;
-
-
-
-            cout << "VITORIA: Ao comer 100 macas sem colisoes, voce vence o jogo!" << endl<< endl;
-
+            cout << "Jogo com tempo: faca o maximo de pontos em 3 minutos" << endl << endl;
             cout << "BOA SORTE!" << endl << endl;
             system("pause");
             system ("cls");
